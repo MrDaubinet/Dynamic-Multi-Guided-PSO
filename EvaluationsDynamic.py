@@ -926,9 +926,9 @@ class EvaluationsDynamic:
         j = 0
         for x_i in range(2, len(x)):
             if x_i % 2 == 0:
-                sum_j += math.pow((x[x_i] - 0.8*math.cos(6*math.pi*x[0]+(x_i*math.pi/len(x)))), 2)
+                sum_j += math.pow((x[x_i] - (0.3 * math.pow(x[0], 2) * math.cos(24 * math.pi * x[0] + (4 * x_i / len(x))) + 0.6 * x[0]) * math.sin(6 * math.pi * x[0] + (x_i * math.pi / len(x)))), 2)
                 j += math.pow(x[x_i], 2)
-        return 2 - math.sqrt(x[0]) + (2/math.fabs(j))*sum_j
+        return 2 - math.sqrt(x[0]) + (2 / math.fabs(j)) * sum_j
 
     @staticmethod
     def __he_7_h(x, t):
@@ -972,3 +972,4 @@ class EvaluationsDynamic:
         self.__bounds = [[0, 1]]
         for loop in range(self.__num_dimensions):
             self.__bounds.append([-1, 1])
+
