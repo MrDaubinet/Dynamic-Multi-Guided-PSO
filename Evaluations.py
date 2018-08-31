@@ -1,4 +1,3 @@
-import math
 from optproblems import zdt
 from optproblems import wfg
 
@@ -1161,3 +1160,5 @@ class Evaluations:
     @staticmethod
     def __wfg9_3obj_f3(decision_variables):
         return wfg.WFG9(3, 24, 4).objective_function(decision_variables)[2]
+
+
