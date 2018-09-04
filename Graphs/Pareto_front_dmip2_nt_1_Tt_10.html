@@ -3,18 +3,19 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
-<body onload="refresh_graph();refresh_graph_pof()">
+<body onload="refresh_graph()">
 
 <div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
 <div id="myDiv2"><!-- Plotly chart will be drawn inside this DIV --></div>
 <script>
 
-    var y_data = [];
-    var x_data = [];
-    var true_pof_y_data = [];
-    var true_pof_x_data = [];
+    var y_datas = [];
+    var x_datas = [];
+
+//    var true_pof_y_data = [];
+//    var true_pof_x_data = [];
     //var c_data = [];
-    function readTextFile(file, data)
+    function readTextFile(file, iter, bool)
     {
         return new Promise(function(resolve, reject) {
             var rawFile = new XMLHttpRequest();
@@ -25,11 +26,12 @@
                 {
                     if(rawFile.status === 200 || rawFile.status == 0)
                     {
+                        console.log(iter);
                         var allText = rawFile.responseText;
-                        if(data)
-                            y_data = allText.split("\n");
+                        if(bool)
+                            y_datas[iter] = allText.split("\n");
                         else
-                            x_data = allText.split("\n");
+                            x_datas[iter] = allText.split("\n");
                     }
                 }
             };
@@ -43,7 +45,7 @@
     {
         return new Promise(function(resolve, reject) {
             var rawFile = new XMLHttpRequest();
-            rawFile.open("GET", "../True POF/ZDT1.pf", false);
+            rawFile.open("GET", "../True POF/WFG1.2D.pf", false);
             rawFile.onreadystatechange = function ()
             {
                 if(rawFile.readyState === 4)
@@ -73,31 +75,33 @@
     function refresh_graph()
     {
         var test_promises = [];
-        test_promises.push(readTextFile("../MGPSO POF/zdt1_1", false));
-        test_promises.push(readTextFile("../MGPSO POF/zdt1_2", true));
-        // readTextFile("Hours Evaluation.txt", x_data);
-        // readTextFile("Tutor Score Evaluation.txt", y_data);
+        //for each archive created for
+        for (var loop = 0; loop < 100; loop++)
+        {
+            y_datas.push([]);
+            x_datas.push([]);
+            test_promises.push(readTextFile("../MGPSO DYNAMIC POF/bench_0_obj_1_nt_1_Tt_10_archive_"+loop+"_run_"+0, loop, false));
+            test_promises.push(readTextFile("../MGPSO DYNAMIC POF/bench_0_obj_2_nt_1_Tt_10_archive_"+loop+"_run_"+0, loop, true));
+        }
+
         Promise.all(test_promises).then(function() {
             var data = [];
-            for (var loop = 0; loop < 200; loop++)
+            for (var loop = 0; loop < 100; loop++)
             {
-                var trace1 = {
-                    y: y_data,
-                    x: x_data,
+                var trace = {
+                    y: y_datas[loop],
+                    x: x_datas[loop],
                     mode: 'markers',
                     marker: {
                         size: 8
                         /*color: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39]*/
                     }
                 };
-                data.push(trace1);
+                data.push(trace);
             }
 
-
-
-
             var layout = {
-                title: 'Pareto-Front Zitzler-Deb-Thiele\'s function 1',
+                title: 'DIMP2',
                 xaxis: {
                 title: 'f1(x)',
                 titlefont: {
@@ -140,7 +144,7 @@
             var data = [trace1];
 
             var layout = {
-                title: 'True Pareto-Front Zitzler-Deb-Thiele\'s function 1',
+                title: 'True Pareto-Front Walking Fish Group function 1',
                 xaxis: {
                 title: 'f1(x)',
                 titlefont: {

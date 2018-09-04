@@ -16,49 +16,71 @@ class EvaluationsDynamic:
         self.__severity_of_change = None
         self.__frequency_of_change = None
         self.__r_i = None
+        self.__t = None
+        self.__run_number = None
 
     # ------------------------------------------------------------------------------------------------- Class Functions ----------------------------------------------------------------------------------------------------- #
     def get_objective_functions(self):
-        return self._objectives
+        return self.__objectives
 
     def get_objective_names(self):
-        return self._objective_names
+        return self.__objective_names
 
     def num_objectives(self):
-        return len(self._objectives)
+        return len(self.__objectives)
 
     def get_constants(self):
-        return self._constants
+        return self.__constants
 
     def get_objective_types(self):
-        return self._objective_types
+        return self.__objective_types
 
     def get_bounds(self):
-        return self._bounds
+        return self.__bounds
 
     def get_num_particles(self):
-        return self.num_particles
+        return self.__num_particles
 
     def get_num_dimensions(self):
-        return self.num_dimensions
+        return self.__num_dimensions
 
     def get_tournament_selection_size(self):
-        return self._tournament_selection_size
+        return self.__tournament_selection_size
 
     def get_extra_bounds(self):
-        return self._extra_bounds
+        return self.__extra_bounds
 
     def get_true_pof(self):
-        if self._true_pof is None:
-            self._true_pof = []
+        if self.__true_pof is None:
+            self.__true_pof = []
             # extract the true pof from the textfile
-            with open("True POF/" + self._current_bench + ".pf") as f:
+            with open("True POF/" + self.__current_bench + ".pf") as f:
                 content = f.readlines()
             # you may also want to remove whitespace characters like `\n` at the end of each line
             content = [x.strip() for x in content]
             for item in content:
-                self._true_pof.append(list(map(float, item.split())))
-        return self._true_pof
+                self.__true_pof.append(list(map(float, item.split())))
+        return self.__true_pof
+
+    def set_severity_of_change(self, s):
+        self.__severity_of_change = s
+
+    def set_frequency_of_change(self, f):
+        self.__frequency_of_change = f
+
+    def update_t(self, iteration):
+        self.__t = (1/self.__severity_of_change)*math.floor(iteration/self.__frequency_of_change)
+        return
+
+    def get_t(self):
+        return self.__t
+
+    def set_run(self, run):
+        self.__run_number = run
+        return
+
+    def get_run(self):
+        return self.__run_number
 
     # ----------------------------------------------- DIMP2 ------------------------------------------------------------ #
     @staticmethod
@@ -66,7 +88,7 @@ class EvaluationsDynamic:
         return [0.475, 1.80, 1.10, 1.80]
 
     @staticmethod
-    def __dimp2_f1(x):
+    def __dimp2_f1(x, t = None):
         return x[0]
 
     @staticmethod
@@ -84,7 +106,7 @@ class EvaluationsDynamic:
 
     @staticmethod
     def __dimp2_h(x, t):
-        return_value = 1 - math.sqrt(EvaluationsDynamic.__dimp2_f1(x) / EvaluationsDynamic.__dimp2_g(x, t))
+        return_value = 1 - math.sqrt(EvaluationsDynamic.__dimp2_f1(x, t) / EvaluationsDynamic.__dimp2_g(x, t))
         return return_value
 
     @staticmethod
@@ -93,7 +115,7 @@ class EvaluationsDynamic:
         return return_value
 
     def dimp2(self):
-        self.__current_bench = "dimp1"
+        self.__current_bench = "dimp2"
         # number of dimensions
         self.__num_dimensions = 30
 
@@ -102,9 +124,9 @@ class EvaluationsDynamic:
         # objective 2
         self.__objectives.append(EvaluationsDynamic.__dimp2_f2)
         # objective name 1
-        self.__objective_names.append('dimp1_1')
+        self.__objective_names.append('bench_0_obj_1_nt_'+str(self.__severity_of_change)+'_Tt_'+str(self.__frequency_of_change))
         # objective name 2
-        self.__objective_names.append('dimp1_2')
+        self.__objective_names.append('bench_0_obj_2_nt_'+str(self.__severity_of_change)+'_Tt_'+str(self.__frequency_of_change))
         # objective type 1
         self.__objective_types.append("min")
         # objective type 2
@@ -131,7 +153,7 @@ class EvaluationsDynamic:
         return x[0]
 
     @staticmethod
-    def __fda1_zhou_g(x, t):
+    def __fda1_zhou_g(x):
         sum = 0
         for x_i in range(1, len(x)):
             sum += math.pow((x[x_i] - EvaluationsDynamic.__dimp2_gi(t, x_i+1, len(x)) -
@@ -168,9 +190,9 @@ class EvaluationsDynamic:
         # objective 2
         self.__objectives.append(EvaluationsDynamic.__fda1_zhou_f2)
         # objective name 1
-        self.__objective_names.append('FDA1_zhou_1')
+        self.__objective_names.append('bench_1_obj_1_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
         # objective name 2
-        self.__objective_names.append('FDA1_zhou_2')
+        self.__objective_names.append('bench_1_obj_2_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
         # objective type 1
         self.__objective_types.append("min")
         # objective type 2
@@ -193,7 +215,7 @@ class EvaluationsDynamic:
         return [0.475, 1.80, 1.10, 1.80]
 
     @staticmethod
-    def __fda2_f1(x):
+    def __fda2_f1(x, t=None):
         return x[0]
 
     @staticmethod
@@ -236,9 +258,9 @@ class EvaluationsDynamic:
         # objective 2
         self.__objectives.append(EvaluationsDynamic.__fda2_f2)
         # objective name 1
-        self.__objective_names.append('FDA2_1')
+        self.__objective_names.append('bench_2_obj_1_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
         # objective name 2
-        self.__objective_names.append('FDA2_2')
+        self.__objective_names.append('bench_2_obj_2_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
         # objective type 1
         self.__objective_types.append("min")
         # objective type 2
@@ -859,8 +881,8 @@ class EvaluationsDynamic:
         for x_i in range(2, len(x)):
             if x_i % 2 == 0:
                 sum_j += math.pow((x[x_i] - 0.8*math.cos(6*math.pi*x[0]+(x_i*math.pi/len(x)))), 2)
-                j += math.pow(x[x_i], 2)
-        return 2 - math.sqrt(x[0]) + (2/math.fabs(j))*sum_j
+                j += 1
+        return 2 - math.sqrt(x[0]) + (2/j)*sum_j
 
     @staticmethod
     def __he_6_h(x, t):
@@ -917,8 +939,8 @@ class EvaluationsDynamic:
         for x_i in range(2, len(x)):
             if x_i % 2 != 0:
                 sum_j += math.pow((x[x_i] - (0.3*math.pow(x[0], 2)*math.cos(24*math.pi*x[0] + (4*x_i/len(x))) + 0.6*x[0])*math.cos(6*math.pi*x[0] + (x_i*math.pi/len(x)))), 2)
-                j += math.pow(x[x_i], 2)
-        return x[0] + (2 / math.fabs(j))*sum_j
+                j += 1
+        return x[0] + (2 / j)*sum_j
 
     @staticmethod
     def __he_7_g(x):
@@ -927,8 +949,8 @@ class EvaluationsDynamic:
         for x_i in range(2, len(x)):
             if x_i % 2 == 0:
                 sum_j += math.pow((x[x_i] - (0.3 * math.pow(x[0], 2) * math.cos(24 * math.pi * x[0] + (4 * x_i / len(x))) + 0.6 * x[0]) * math.sin(6 * math.pi * x[0] + (x_i * math.pi / len(x)))), 2)
-                j += math.pow(x[x_i], 2)
-        return 2 - math.sqrt(x[0]) + (2 / math.fabs(j)) * sum_j
+                j += j
+        return 2 - math.sqrt(x[0]) + (2 / j) * sum_j
 
     @staticmethod
     def __he_7_h(x, t):
