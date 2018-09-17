@@ -9,10 +9,10 @@ def main():
 
     for run in range(1):
         evaluations_dynamic.set_severity_of_change(severity_of_change[1])
-        evaluations_dynamic.set_frequency_of_change(frequency_of_change[0])
+        evaluations_dynamic.set_frequency_of_change(frequency_of_change[1])
         evaluations_dynamic.set_run(run)
         # -- Test DIMP2 -- #
         evaluations_dynamic.fda2()
-        PSODynamic.PSODynamic(2000, evaluations_dynamic)
+        PSODynamic.PSODynamic(1000, evaluations_dynamic)
 
 main()

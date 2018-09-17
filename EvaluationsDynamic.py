@@ -212,7 +212,7 @@ class EvaluationsDynamic:
 
     @staticmethod
     def __fda2_constants():
-        return [0.475, 1.80, 1.10, 1.80]
+        return [0.72, 1.49, 1.49, 1.49]
 
     @staticmethod
     def __fda2_f1(x, t=None):
@@ -221,7 +221,7 @@ class EvaluationsDynamic:
     @staticmethod
     def __fda2_g(x):
         sum = 0
-        for x_i in range(1, len(x)):
+        for x_i in range(1, 16):
             sum += math.pow((x[x_i]), 2)
         return 1 + sum
 
@@ -238,7 +238,7 @@ class EvaluationsDynamic:
     @staticmethod
     def __fda2_H_2(x, t):
         sum = 0
-        for x_i in range(1, len(x)):
+        for x_i in range(16, len(x)):
             sum += math.pow((x[x_i] - EvaluationsDynamic.__fda2_H(t)), 2)
         return_value = math.pow((EvaluationsDynamic.__fda2_H(t) + sum), -1)
         return return_value
@@ -251,7 +251,7 @@ class EvaluationsDynamic:
     def fda2(self):
         self.__current_bench = "FDA2"
         # number of dimensions
-        self.__num_dimensions = 30
+        self.__num_dimensions = 31
 
         # objective 1
         self.__objectives.append(EvaluationsDynamic.__fda2_f1)
