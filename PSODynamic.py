@@ -13,7 +13,7 @@ class PSODynamic:
         max_iterations: Number of iterations
         dimensions: Number of dimensions (length of particle position vector)
         """
-        best_swarm_global_fitness_values = []              # best error for group
+        best_swarm_global_fitness_values = []        # best error for group
         swarm_gbest_positions = []                   # best position for group
         evaluations = dynamic_evaluations
         objective_functions = evaluations.get_objective_functions()
@@ -50,10 +50,26 @@ class PSODynamic:
             evaluations.update_t(iteration)
             # check if t has changed
             if evaluations.get_t() != prev_t:
+                # reset particle pbest and gbest values
+                PSODynamic.reset_particle(swarms, objective_functions, objective_types, best_swarm_global_fitness_values, swarm_gbest_positions)
+                # reset best_swarm_global_fitness_values
+                # reset swarm_gbest_positions
+                best_swarm_global_fitness_values = []  # best error for group
+                swarm_gbest_positions = []
+                for objective_index in range(len(objective_functions)):
+                    if objective_types[objective_index] == "min":
+                        best_swarm_global_fitness_values.append(float('inf'))
+                    else:
+                        best_swarm_global_fitness_values.append(float('-inf'))
+                    swarm_gbest_positions.append([])
                 # refresh archive
                 archive.refresh_archive()
                 # update prev_t
                 prev_t = evaluations.get_t()
+
+            # if iteration == 200 or iteration == 500 or iteration == 1000:
+            #     archive.save_the_archive()
+            #     print()
             for objective_index in range(len(objective_functions)):
                 # cycle through particles in objective swarm and evaluate fitness
                 for particle_index in range(0, num_particles[objective_index]):
@@ -89,3 +105,29 @@ class PSODynamic:
         print('FINAL:')
         # print(best_global_positions)
         # print(best_global_fitness_value)
+
+    @staticmethod
+    def reset_particle(swarms, objective_functions, objective_types, best_swarm_global_fitness_values, swarm_gbest_positions):
+        """
+        for every particle in each swarm,
+            # reset best position
+            # reset best fitness value
+        Reset best_swarm_global_fitness_values.
+        Reset swarm_gbest_positions.
+        :param swarms:
+        :return:
+        """
+        # for every particle in each swarm,
+        # reset best position
+        # reset best fitness value
+        for swarm_index in range(len(swarms)):
+            for particle_index in range(len(swarms[swarm_index])):
+                swarms[swarm_index][particle_index].pbest_position_indexes = []
+                if swarms[swarm_index][particle_index].objective_type == "min":
+                    swarms[swarm_index][particle_index].best_fitness_value = float('inf')
+                else:
+                    swarms[swarm_index][particle_index].best_fitness_value = float('-inf')
+                # possibly reset velocity,+
+                swarms[swarm_index][particle_index].velocity_indexes = [0] * swarms[swarm_index][particle_index].num_dimensions
+        return
+

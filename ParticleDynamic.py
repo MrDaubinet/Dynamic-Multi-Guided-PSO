@@ -15,6 +15,7 @@ class ParticleDynamic:
         self.c1 = c1
         self.c2 = c2
         self.c3 = c3
+        self.objective_type = objective_type
 
         if objective_type == "min":
             self.best_fitness_value = float('inf')

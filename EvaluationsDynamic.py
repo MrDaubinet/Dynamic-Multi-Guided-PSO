@@ -101,7 +101,7 @@ class EvaluationsDynamic:
 
     @staticmethod
     def __dimp2_gi(t, i, n):
-        return_value = math.pow((math.sin(0.5*math.pi*t + 2*math.pi*(i/n+1))), 2)
+        return_value = math.pow((math.sin(0.5*math.pi*t + 2*math.pi*(i/(n+1)))), 2)
         return return_value
 
     @staticmethod
@@ -115,9 +115,9 @@ class EvaluationsDynamic:
         return return_value
 
     def dimp2(self):
-        self.__current_bench = "dimp2"
+        self.__current_bench = self.__current_bench = 'bench_0_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change)
         # number of dimensions
-        self.__num_dimensions = 30
+        self.__num_dimensions = 2
 
         # objective 1
         self.__objectives.append(EvaluationsDynamic.__dimp2_f1)
@@ -142,22 +142,96 @@ class EvaluationsDynamic:
         for loop in range(1, self.__num_dimensions):
             self.__bounds.append([-2, 2])
 
-    # ----------------------------------------------- FDA1_zhou ------------------------------------------------------------ #
+    def dimp2_generate_pof(self, max_samples):
+        pof = []
+        for sample_index in range(max_samples):
+            pof.append(1 - math.sqrt(1 / 1000 * sample_index))
+
+        self.__save_true_pof(pof, 0)
+
+    # ----------------------------------------------- FDA1 ------------------------------------------------------------ #
+
+    @staticmethod
+    def __fda1_constants():
+        return [0.475, 1.80, 1.10, 1.80]
+
+    @staticmethod
+    def __fda1_f1(x, t=None):
+        return x[0]
+
+    @staticmethod
+    def __fda1_g(x, t):
+        sum = 0
+        for x_i in range(1, len(x)):
+            sum += math.pow(x[x_i] - EvaluationsDynamic.__fda1_G(t), 2)
+        return 1 + sum
+
+    @staticmethod
+    def __fda1_h(x, t):
+        return_value = 1 - math.sqrt(EvaluationsDynamic.__fda1_f1(x)/EvaluationsDynamic.__fda1_g(x, t))
+        return return_value
+
+    @staticmethod
+    def __fda1_G(t):
+        return_value = math.sin(0.5 * math.pi * t)
+        return return_value
+
+    @staticmethod
+    def __fda1_f2(x, t):
+        return_value = EvaluationsDynamic.__fda1_g(x, t) * EvaluationsDynamic.__fda1_h(x, t)
+        return return_value
+
+    def fda1(self):
+        self.__current_bench = self.__current_bench = 'bench_1_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change)
+        # number of dimensions
+        self.__num_dimensions = 2
+
+        # objective 1
+        self.__objectives.append(EvaluationsDynamic.__fda1_f1)
+        # objective 2
+        self.__objectives.append(EvaluationsDynamic.__fda1_f2)
+        # objective name 1
+        self.__objective_names.append('bench_1_obj_1_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
+        # objective name 2
+        self.__objective_names.append('bench_1_obj_2_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
+        # objective type 1
+        self.__objective_types.append("min")
+        # objective type 2
+        self.__objective_types.append("min")
+        # number of particles
+        self.__num_particles = [25, 25]
+        # constants
+        self.__constants = EvaluationsDynamic.__fda1_constants()
+        # selection size
+        self.__tournament_selection_size = 3
+        # bounds
+        self.__bounds = [[0, 1]]
+        for loop in range(1, self.__num_dimensions):
+            self.__bounds.append([-1, 1])
+
+    def fda1_generate_pof(self, max_samples):
+        pof = []
+        for sample_index in range(max_samples):
+            pof.append(1 - math.sqrt(1 / 1000 * sample_index))
+
+        self.__save_true_pof(pof, 0)
+
+    # ----------------------------------------------- FDA1_zhou (ZJZ) ------------------------------------------------------------ #
 
     @staticmethod
     def __fda1_zhou_constants():
         return [0.475, 1.80, 1.10, 1.80]
 
     @staticmethod
-    def __fda1_zhou_f1(x):
+    def __fda1_zhou_f1(x, t=None):
         return x[0]
 
     @staticmethod
-    def __fda1_zhou_g(x):
+    def __fda1_zhou_g(x, t):
         sum = 0
         for x_i in range(1, len(x)):
-            sum += math.pow((x[x_i] - EvaluationsDynamic.__dimp2_gi(t, x_i+1, len(x)) -
-                             math.pow(x[0], EvaluationsDynamic.__fda1_zhou_H(t))), 2)
+            sum += math.pow((x[x_i] - EvaluationsDynamic.__fda1_zhou_G(t) -
+                             math.pow(math.fabs(x[1]), EvaluationsDynamic.__fda1_zhou_H(t))), 2)
         return 1 + sum
 
     @staticmethod
@@ -167,7 +241,7 @@ class EvaluationsDynamic:
 
     @staticmethod
     def __fda1_zhou_h(x, t):
-        return_value = 1 - math.pow((EvaluationsDynamic.__dimp2_f1(x)/EvaluationsDynamic.__dimp2_g(x, t)), EvaluationsDynamic.__fda1_zhou_H(t))
+        return_value = 1 - math.pow((EvaluationsDynamic.__fda1_zhou_f1(x)/EvaluationsDynamic.__fda1_zhou_g(x, t)), EvaluationsDynamic.__fda1_zhou_H(t))
         return return_value
 
     @staticmethod
@@ -181,18 +255,18 @@ class EvaluationsDynamic:
         return return_value
 
     def fda1_zhou(self):
-        self.__current_bench = "FDA1_zhou"
+        self.__current_bench = self.__current_bench = 'bench_2_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change)
         # number of dimensions
-        self.__num_dimensions = 30
+        self.__num_dimensions = 2
 
         # objective 1
         self.__objectives.append(EvaluationsDynamic.__fda1_zhou_f1)
         # objective 2
         self.__objectives.append(EvaluationsDynamic.__fda1_zhou_f2)
         # objective name 1
-        self.__objective_names.append('bench_1_obj_1_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
+        self.__objective_names.append('bench_2_obj_1_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
         # objective name 2
-        self.__objective_names.append('bench_1_obj_2_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
+        self.__objective_names.append('bench_2_obj_2_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
         # objective type 1
         self.__objective_types.append("min")
         # objective type 2
@@ -208,11 +282,26 @@ class EvaluationsDynamic:
         for loop in range(1, self.__num_dimensions):
             self.__bounds.append([-1, 1])
 
+    def fda1_zhou_generate_pof(self, max_samples):
+        pof_count = 0
+        prev_t = -1
+        for iteration in range(1000):
+            self.update_t(iteration+1)
+            if self.get_t() != prev_t:
+                pof = []
+                for sample_index in range(max_samples):
+                    f_1 = 1 / 1000 * sample_index
+                    H = EvaluationsDynamic.__fda1_zhou_H(self.get_t())
+                    pof.append(1 - math.pow(f_1, H))
+                self.__save_true_pof(pof, pof_count)
+                pof_count += 1
+                prev_t = self.get_t()
+
     # ----------------------------------------------- FDA2 ------------------------------------------------------------ #
 
     @staticmethod
     def __fda2_constants():
-        return [0.72, 1.49, 1.49, 1.49]
+        return [0.475, 1.80, 1.10, 1.80]
 
     @staticmethod
     def __fda2_f1(x, t=None):
@@ -221,7 +310,7 @@ class EvaluationsDynamic:
     @staticmethod
     def __fda2_g(x):
         sum = 0
-        for x_i in range(1, 16):
+        for x_i in range(1, 2):
             sum += math.pow((x[x_i]), 2)
         return 1 + sum
 
@@ -238,7 +327,7 @@ class EvaluationsDynamic:
     @staticmethod
     def __fda2_H_2(x, t):
         sum = 0
-        for x_i in range(16, len(x)):
+        for x_i in range(2, len(x)):
             sum += math.pow((x[x_i] - EvaluationsDynamic.__fda2_H(t)), 2)
         return_value = math.pow((EvaluationsDynamic.__fda2_H(t) + sum), -1)
         return return_value
@@ -249,18 +338,18 @@ class EvaluationsDynamic:
         return return_value
 
     def fda2(self):
-        self.__current_bench = "FDA2"
+        self.__current_bench = self.__current_bench = 'bench_3_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change)
         # number of dimensions
-        self.__num_dimensions = 31
+        self.__num_dimensions = 3
 
         # objective 1
         self.__objectives.append(EvaluationsDynamic.__fda2_f1)
         # objective 2
         self.__objectives.append(EvaluationsDynamic.__fda2_f2)
         # objective name 1
-        self.__objective_names.append('bench_2_obj_1_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
+        self.__objective_names.append('bench_3_obj_1_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
         # objective name 2
-        self.__objective_names.append('bench_2_obj_2_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
+        self.__objective_names.append('bench_3_obj_2_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
         # objective type 1
         self.__objective_types.append("min")
         # objective type 2
@@ -276,6 +365,25 @@ class EvaluationsDynamic:
         for loop in range(1, self.__num_dimensions):
             self.__bounds.append([-1, 1])
 
+    def fda2_generate_pof(self, max_samples):
+        pof_count = 0
+        prev_t = -1
+        for iteration in range(1000):
+            self.update_t(iteration + 1)
+            if self.get_t() != prev_t:
+                pof = []
+                for sample_index in range(max_samples):
+                    f_1 = 1 / 1000 * sample_index
+                    H = EvaluationsDynamic.__fda2_H(self.get_t())
+                    if H == 0:
+                        H_res = 0
+                    else:
+                        H_res = math.pow(math.fabs(H), -1)
+                    pof.append(1 - math.pow(f_1, H_res))
+                self.__save_true_pof(pof, pof_count)
+                pof_count += 1
+                prev_t = self.get_t()
+
     # ----------------------------------------------- FDA2_camara ------------------------------------------------------------ #
 
     @staticmethod
@@ -283,13 +391,13 @@ class EvaluationsDynamic:
         return [0.475, 1.80, 1.10, 1.80]
 
     @staticmethod
-    def __fda2_camara_f1(x):
+    def __fda2_camara_f1(x, t=None):
         return x[0]
 
     @staticmethod
     def __fda2_camara_g(x):
         sum = 0
-        for x_i in range(1, len(x)):
+        for x_i in range(1, 2):
             sum += math.pow((x[x_i]), 2)
         return 1 + sum
 
@@ -306,7 +414,7 @@ class EvaluationsDynamic:
     @staticmethod
     def __fda2_camara_H_2(x, t):
         sum = 0
-        for x_i in range(1, len(x)):
+        for x_i in range(2, len(x)):
             sum += math.pow((x[x_i] - (EvaluationsDynamic.__fda2_camara_H(t)/2)), 2)
         return_value = EvaluationsDynamic.__fda2_camara_H(t) + sum
         return return_value
@@ -317,18 +425,18 @@ class EvaluationsDynamic:
         return return_value
 
     def fda2_camara(self):
-        self.__current_bench = "FDA2_camara"
+        self.__current_bench = 'bench_3_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change)
         # number of dimensions
-        self.__num_dimensions = 30
+        self.__num_dimensions = 3
 
         # objective 1
         self.__objectives.append(EvaluationsDynamic.__fda2_camara_f1)
         # objective 2
         self.__objectives.append(EvaluationsDynamic.__fda2_camara_f2)
         # objective name 1
-        self.__objective_names.append('FDA2_camara_1')
+        self.__objective_names.append('bench_3_obj_1_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
         # objective name 2
-        self.__objective_names.append('FDA2_camara_2')
+        self.__objective_names.append('bench_3_obj_2_nt_' + str(self.__severity_of_change) + '_Tt_' + str(self.__frequency_of_change))
         # objective type 1
         self.__objective_types.append("min")
         # objective type 2
@@ -343,6 +451,21 @@ class EvaluationsDynamic:
         self.__bounds = [[0, 1]]
         for loop in range(1, self.__num_dimensions):
             self.__bounds.append([-1, 1])
+
+    def fda2_camara_generate_pof(self, max_samples):
+        pof_count = 0
+        prev_t = -1
+        for iteration in range(1000):
+            self.update_t(iteration + 1)
+            if self.get_t() != prev_t:
+                pof = []
+                for sample_index in range(max_samples):
+                    f_1 = 1 / 1000 * sample_index
+                    H = EvaluationsDynamic.__fda2_H(self.get_t())
+                    pof.append(1 - math.pow(f_1, H))
+                self.__save_true_pof(pof, pof_count)
+                pof_count += 1
+                prev_t = self.get_t()
 
     # ----------------------------------------------- FDA3 ------------------------------------------------------------ #
 
@@ -995,3 +1118,12 @@ class EvaluationsDynamic:
         for loop in range(self.__num_dimensions):
             self.__bounds.append([-1, 1])
 
+    # ----------------------------------------------- Extra ------------------------------------------------------------ #
+    def __save_true_pof(self, pof, iteration):
+        file_writer = open("TRUE DYNAMIC POF/"+self.__current_bench+"_pof_"+str(iteration), 'w')
+        file_writer.close()
+        for index in range(len(pof)):
+            file_writer = open("TRUE DYNAMIC POF/"+self.__current_bench+"_pof_"+str(iteration), 'a')
+            file_writer.write("%s\n" % pof[index])
+            file_writer.close()
+        return

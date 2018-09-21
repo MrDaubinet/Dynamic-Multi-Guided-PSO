@@ -68,6 +68,9 @@ class ArchiveDynamic:
         for particle in temp_archive:
             self.add_to_archive(copy.deepcopy(particle))
 
+    def save_the_archive(self):
+        self.__save_archive()
+
 # ----------------------------------------------------# Private #---------------------------------------------------- #
 
     def __check_if_dominated(self, particle):
