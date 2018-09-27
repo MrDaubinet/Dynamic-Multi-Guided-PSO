@@ -9,6 +9,7 @@ class ParticleDynamic:
         self.best_fitness_value = None  # best error individual
         self.bounds = bounds
         self.num_dimensions = num_dimensions
+
         self.fitness_function_value = None
         self.guide_influence = random.random()
         self.w = w
@@ -27,8 +28,8 @@ class ParticleDynamic:
             self.position_indexes.append(random.uniform(bounds[i][0], bounds[i][1]))
 
     # evaluate current fitness
-    def evaluate(self, objective_function, t):
-        self.fitness_function_value = objective_function(self.position_indexes, t)
+    def evaluate(self, objective_function, t, r_i):
+        self.fitness_function_value = objective_function(self.position_indexes, t, r_i)
         return
 
     # update new particle velocity

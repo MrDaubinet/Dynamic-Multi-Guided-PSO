@@ -51,7 +51,7 @@ class PSODynamic:
             # check if t has changed
             if evaluations.get_t() != prev_t:
                 # reset particle pbest and gbest values
-                PSODynamic.reset_particle(swarms, objective_functions, objective_types, best_swarm_global_fitness_values, swarm_gbest_positions)
+                PSODynamic.reset_particle(swarms)
                 # reset best_swarm_global_fitness_values
                 # reset swarm_gbest_positions
                 best_swarm_global_fitness_values = []  # best error for group
@@ -73,7 +73,7 @@ class PSODynamic:
             for objective_index in range(len(objective_functions)):
                 # cycle through particles in objective swarm and evaluate fitness
                 for particle_index in range(0, num_particles[objective_index]):
-                    swarms[objective_index][particle_index].evaluate(objective_functions[objective_index], evaluations.get_t())
+                    swarms[objective_index][particle_index].evaluate(objective_functions[objective_index], evaluations.get_t(), evaluations.get_r_i())
                     # check to see if the current position is an individual best
                     if (objective_types[objective_index] == "min" and swarms[objective_index][particle_index].fitness_function_value < swarms[objective_index][particle_index].best_fitness_value) \
                             or (objective_types[objective_index] == "max" and swarms[objective_index][particle_index].fitness_function_value > swarms[objective_index][particle_index].best_fitness_value) \
@@ -107,7 +107,7 @@ class PSODynamic:
         # print(best_global_fitness_value)
 
     @staticmethod
-    def reset_particle(swarms, objective_functions, objective_types, best_swarm_global_fitness_values, swarm_gbest_positions):
+    def reset_particle(swarms):
         """
         for every particle in each swarm,
             # reset best position

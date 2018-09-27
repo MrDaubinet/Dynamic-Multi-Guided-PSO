@@ -151,7 +151,7 @@ class ArchiveDynamic:
         objective_values = []
         particle.crowding_distances = []
         for objective_function in self.evaluation.get_objective_functions():
-            objective_values.append(objective_function(particle.position_indexes, self.evaluation.get_t()))
+            objective_values.append(objective_function(particle.position_indexes, self.evaluation.get_t(), self.evaluation.get_r_i()))
             particle.crowding_distances.append(-1)
         particle.objective_values = objective_values
         return
@@ -177,7 +177,10 @@ class ArchiveDynamic:
                 distance = abs(self.archive_particles[particle_index+1].objective_values[objective_index] -
                         self.archive_particles[particle_index-1].objective_values[objective_index])
 
-                crowding_distance = distance/(objective_max - objective_min)
+                if objective_max - objective_min != 0:
+                    crowding_distance = distance/(objective_max - objective_min)
+                else:
+                    crowding_distance = 0
                 self.archive_particles[particle_index].crowding_distances[objective_index] = crowding_distance
 
         return
