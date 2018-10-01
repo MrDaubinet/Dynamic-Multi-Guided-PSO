@@ -51,7 +51,7 @@ class Evaluations:
         if self._true_pof is None:
             self._true_pof = []
             # extract the true pof from the textfile
-            with open("True POF/"+self._current_bench+".pf") as f:
+            with open("Static True POF/"+self._current_bench+".pf") as f:
                 content = f.readlines()
             # you may also want to remove whitespace characters like `\n` at the end of each line
             content = [x.strip() for x in content]

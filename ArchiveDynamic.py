@@ -1,16 +1,20 @@
 import random
 import copy
 import math
+import os
 
 
 class ArchiveDynamic:
-    def __init__(self, num_particles, evaluation):
+    def __init__(self, num_particles, evaluation, algorithm_name, archive_strategy, dimensionality):
         self.archive_particles = []
         self.max_size = num_particles
         self.sorted_objective_values = []
         self.evaluation = evaluation
         self.__generational_distances = []
         self.__archive_count = 0
+        self.algorithm_name = algorithm_name
+        self.archive_strategy = archive_strategy
+        self.dimensionality = dimensionality
 
 # ------------------------------------------------------# Public #----------------------------------------------------#
     def add_to_archive(self, particle):
@@ -200,11 +204,16 @@ class ArchiveDynamic:
     def __save_archive(self):
         objective_names = self.evaluation.get_objective_names()
         for objective_index in range(len(objective_names)):
-            file_writer = open("MGPSO DYNAMIC POF/"+objective_names[objective_index]+"_archive_"+str(self.__archive_count)+"_run_"+str(self.evaluation.get_run()), 'w')
+            file_directory_pof = "Dynamic POF/"+self.algorithm_name+"/"+self.archive_strategy+"/"+self.dimensionality+"/nT_"+str(self.evaluation.severity_of_change)+"_tT_"+str(self.evaluation.frequency_of_change)+"/"+objective_names[objective_index]+"/run_"+str(self.evaluation.get_run())+"/archive_"+str(self.__archive_count)
+            if not os.path.exists(os.path.dirname(file_directory_pof)):
+                os.makedirs(os.path.dirname(file_directory_pof))
+            file_writer = open(file_directory_pof, 'w')
             file_writer.close()
         for particle_index in range(len(self.archive_particles)):
             for objective_index in range(len(self.archive_particles[particle_index].objective_values)):
-                file_writer = open("MGPSO DYNAMIC POF/"+objective_names[objective_index]+"_archive_"+str(self.__archive_count)+"_run_"+str(self.evaluation.get_run()), 'a')
+                file_directory_pof = "Dynamic POF/" + self.algorithm_name + "/" + self.archive_strategy + "/" + self.dimensionality + "/nT_" + str(self.evaluation.severity_of_change) + "_tT_" + str(
+                    self.evaluation.frequency_of_change) + "/" + objective_names[objective_index] + "/run_" + str(self.evaluation.get_run()) + "/archive_" + str(self.__archive_count)
+                file_writer = open(file_directory_pof, 'a')
                 file_writer.write("%s\n" % self.archive_particles[particle_index].objective_values[objective_index])
                 file_writer.close()
         # update the archive count

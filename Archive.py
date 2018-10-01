@@ -183,11 +183,11 @@ class Archive:
     def __save_archive(self):
         objective_names = self.evaluation.get_objective_names()
         for objective_index in range(len(objective_names)):
-            file_writer = open("MGPSO POF/"+objective_names[objective_index], 'w')
+            file_writer = open("Static MGPSO POF/"+objective_names[objective_index], 'w')
             file_writer.close()
         for particle_index in range(len(self.archive_particles)):
             for objective_index in range(len(self.archive_particles[particle_index].objective_values)):
-                file_writer = open("MGPSO POF/"+objective_names[objective_index], 'a')
+                file_writer = open("Static MGPSO POF/"+objective_names[objective_index], 'a')
                 file_writer.write("%s\n" % self.archive_particles[particle_index].objective_values[objective_index])
                 file_writer.close()
         return
