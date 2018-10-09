@@ -130,7 +130,7 @@ class EvaluationsDynamic:
     def dimp2(self):
         self.__current_bench = self.__current_bench = 'bench_0'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -200,7 +200,7 @@ class EvaluationsDynamic:
     def fda1(self):
         self.__current_bench = self.__current_bench = 'bench_1'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -276,7 +276,7 @@ class EvaluationsDynamic:
     def fda1_zhou(self):
         self.__current_bench = self.__current_bench = 'bench_2'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -332,7 +332,7 @@ class EvaluationsDynamic:
     @staticmethod
     def __fda2_g(x):
         sum = 0
-        for x_i in range(1, 8):
+        for x_i in range(1, 15):
             sum += math.pow(x[x_i], 2)
         return 1 + sum
 
@@ -349,7 +349,7 @@ class EvaluationsDynamic:
     @staticmethod
     def __fda2_H_2(x, t):
         sum = 0
-        for x_i in range(8, len(x)):
+        for x_i in range(15, len(x)):
             sum += math.pow((x[x_i] - EvaluationsDynamic.__fda2_H(t)), 2)
         H = EvaluationsDynamic.__fda2_H(t)
         if H == 0 and sum == 0:
@@ -365,7 +365,7 @@ class EvaluationsDynamic:
     def fda2(self):
         self.__current_bench = self.__current_bench = 'bench_3'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -425,7 +425,7 @@ class EvaluationsDynamic:
     @staticmethod
     def __fda2_camara_g(x):
         sum = 0
-        for x_i in range(1, 8):
+        for x_i in range(1, 15):
             sum += math.pow((x[x_i]), 2)
         return 1 + sum
 
@@ -442,7 +442,7 @@ class EvaluationsDynamic:
     @staticmethod
     def __fda2_camara_H_2(x, t):
         sum = 0
-        for x_i in range(8, len(x)):
+        for x_i in range(15, len(x)):
             sum += math.pow((x[x_i] - (EvaluationsDynamic.__fda2_camara_H(t)/2)), 2)
         return_value = EvaluationsDynamic.__fda2_camara_H(t) + sum
         return return_value
@@ -455,7 +455,7 @@ class EvaluationsDynamic:
     def fda2_camara(self):
         self.__current_bench = 'bench_4'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -542,7 +542,7 @@ class EvaluationsDynamic:
     def fda3(self):
         self.__current_bench = 'bench_5'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -625,7 +625,7 @@ class EvaluationsDynamic:
     def fda3_camara(self):
         self.__current_bench = 'bench_6'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -708,7 +708,7 @@ class EvaluationsDynamic:
     def dmop2(self):
         self.__current_bench = 'bench_7'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -789,7 +789,7 @@ class EvaluationsDynamic:
     def dmop3(self):
         self.__current_bench = 'bench_8'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -872,7 +872,7 @@ class EvaluationsDynamic:
     def dmop2_iso(self):
         self.__current_bench = 'bench_9'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -962,7 +962,7 @@ class EvaluationsDynamic:
     def dmop2_dec(self):
         self.__current_bench = 'bench_10'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -1037,7 +1037,7 @@ class EvaluationsDynamic:
     def he_1(self):
         self.__current_bench = 'bench_11'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -1124,7 +1124,7 @@ class EvaluationsDynamic:
     def he_2(self):
         self.__current_bench = 'bench_12'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -1221,7 +1221,7 @@ class EvaluationsDynamic:
     def he_3(self):
         self.__current_bench = 'bench_13'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -1328,7 +1328,7 @@ class EvaluationsDynamic:
     def he_6(self):
         self.__current_bench = 'bench_14'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -1432,7 +1432,7 @@ class EvaluationsDynamic:
     def he_7(self):
         self.__current_bench = 'bench_15'
         # number of dimensions
-        self.__num_dimensions = 15
+        self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []

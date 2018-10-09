@@ -1,20 +1,25 @@
 import random
+import math
 
-
-class Particle:
-    def __init__(self, num_dimensions, objective_type, bounds, w, c1, c2, c3):
+class ParticleDynamic:
+    def __init__(self, num_dimensions, objective_type, bounds, w, c1, c2, c3, charged):
         self.position_indexes = []          # particle position
         self.velocity_indexes = []          # particle velocity
         self.pbest_position_indexes = []     # best position individual
+        self.gbest_position_indexes = None
         self.best_fitness_value = None  # best error individual
         self.bounds = bounds
         self.num_dimensions = num_dimensions
+
         self.fitness_function_value = None
         self.guide_influence = random.random()
         self.w = w
         self.c1 = c1
         self.c2 = c2
         self.c3 = c3
+        self.objective_type = objective_type
+
+        self.is_charged = charged
 
         if objective_type == "min":
             self.best_fitness_value = float('inf')
@@ -26,8 +31,8 @@ class Particle:
             self.position_indexes.append(random.uniform(bounds[i][0], bounds[i][1]))
 
     # evaluate current fitness
-    def evaluate(self, objective_function):
-        self.fitness_function_value = objective_function(self.position_indexes)
+    def evaluate(self, objective_function, t, r_i):
+        self.fitness_function_value = objective_function(self.position_indexes, t, r_i)
         return
 
     # update new particle velocity
@@ -37,7 +42,7 @@ class Particle:
         c1 = 1.49618       # cognitive constant
         c2 = 1.49618       # social constant
         c3 = 1.49618       # guide constant"""
-
+        self.gbest_position_indexes = gbest_position_indexes
         for i in range(0, self.num_dimensions):
             r1 = random.random()
             r2 = random.random()
@@ -53,17 +58,29 @@ class Particle:
     # update the particle position based off new velocity updates
     def update_position(self):
         for i in range(0, self.num_dimensions):
-            self.position_indexes[i] = self.position_indexes[i] + self.velocity_indexes[i]
+            if self.is_charged:
+                # we have our center particle
+                center = self.gbest_position_indexes[i]
+                radius = (math.fabs(self.bounds[i][0]) + math.fabs(self.bounds[i][1]))/4
 
-            # adjust maximum position if necessary
-            if self.position_indexes[i] > self.bounds[i][1]:
-                # set the position random value within the bounds
-                # this may have a bug
-                self.position_indexes[i] = random.uniform(self.bounds[i][0], self.bounds[i][1])
+                upper_bound = center + radius
+                lower_bound = center - radius
 
-            # adjust minimum position if necessary
-            if self.position_indexes[i] < self.bounds[i][0]:
-                # set the position random value within the bounds
-                self.position_indexes[i] = random.uniform(self.bounds[i][0], self.bounds[i][1])
+                # check bounds
+                if lower_bound < self.bounds[i][0]:
+                    lower_bound = self.bounds[i][0]
+                if upper_bound > self.bounds[i][1]:
+                    upper_bound = self.bounds[i][1]
+
+                self.position_indexes[i] = random.uniform(lower_bound, upper_bound)
+            else:
+                self.position_indexes[i] = self.position_indexes[i] + self.velocity_indexes[i]
+                # adjust maximum position if necessary
+                if self.position_indexes[i] > self.bounds[i][1]:
+                    self.position_indexes[i] = self.bounds[i][0]
+
+                # adjust minimum position if necessary
+                if self.position_indexes[i] < self.bounds[i][0]:
+                    self.position_indexes[i] = self.bounds[i][0]
 
         return

@@ -1,5 +1,17 @@
 import EvaluationsDynamicLowDimensions
+import EvaluationsDynamicMediumDimensions
+import EvaluationsDynamicLargeDimensions
+
+import MGPSODynamicStrategy1
 import MGPSODynamicStrategy2
+import MGPSODynamicStrategy3
+import MGPSODynamicStrategy4
+
+import QMGPSODynamicStrategy1
+import QMGPSODynamicStrategy2
+import QMGPSODynamicStrategy3
+import QMGPSODynamicStrategy4
+
 from multiprocessing.dummy import Pool as ThreadPool
 
 
@@ -8,6 +20,9 @@ class RunAlgorithm:
         self.set_start_threads(algorithm, archive_strategy, dimensions)
 
     def set_start_threads(self, algorithm, archive_strategy, dimensions):
+        print("Algorithm: "+str(algorithm))
+        print("Archive Strategy: "+str(archive_strategy))
+        print("Dimension: "+str(dimensions))
         nt_list = []
         tt_list = []
         benchmark_list = []
@@ -18,9 +33,9 @@ class RunAlgorithm:
         archive_strategy_list = []
 
         run_count = 0
-        run_total = 30*16*3*3
+        run_total = 10*16*3*3
         print("Total number of runs: "+str(run_total))
-        for run in range(30):
+        for run in range(0, 10):
             for benchmark in range(16):
                 for nT in range(3):
                     for tT in range(3):
@@ -46,9 +61,11 @@ class RunAlgorithm:
             evaluations_dynamic = EvaluationsDynamicLowDimensions.EvaluationsDynamic()
             evaluations_dynamic.set_dimensions_type("Low Dimensions")
         elif dimensions == 1:
-            return
+            evaluations_dynamic = EvaluationsDynamicMediumDimensions.EvaluationsDynamic()
+            evaluations_dynamic.set_dimensions_type("Medium Dimensions")
         elif dimensions == 2:
-            return
+            evaluations_dynamic = EvaluationsDynamicLargeDimensions.EvaluationsDynamic()
+            evaluations_dynamic.set_dimensions_type("Large Dimensions")
 
         # create the benchmark functions from the evaluations object
         benchmarks = [
@@ -86,6 +103,7 @@ class RunAlgorithm:
             # MGPSO
             if archive_strategy == 0:
                 # Archive Strategy 1
+                MGPSODynamicStrategy1.PSODynamic(1000, evaluations_dynamic)
                 return
             if archive_strategy == 1:
                 # Archive Strategy 2
@@ -93,23 +111,29 @@ class RunAlgorithm:
                 return
             if archive_strategy == 2:
                 # Archive Strategy 3
+                MGPSODynamicStrategy3.PSODynamic(1000, evaluations_dynamic)
                 return
             if archive_strategy == 3:
                 # Archive Strategy 4
+                MGPSODynamicStrategy4.PSODynamic(1000, evaluations_dynamic)
                 return
         else:
             # Quantum MGPSO
             if archive_strategy == 0:
                 # Archive Strategy 1
+                QMGPSODynamicStrategy1.PSODynamic(1000, evaluations_dynamic)
                 return
             if archive_strategy == 1:
                 # Archive Strategy 2
+                QMGPSODynamicStrategy2.PSODynamic(1000, evaluations_dynamic)
                 return
             if archive_strategy == 2:
                 # Archive Strategy 3
+                QMGPSODynamicStrategy3.PSODynamic(1000, evaluations_dynamic)
                 return
             if archive_strategy == 3:
                 # Archive Strategy 4
+                QMGPSODynamicStrategy4.PSODynamic(1000, evaluations_dynamic)
                 return
 
     def set_test_start_threads(self, algorithm, archive_strategy, dimensions):
@@ -124,7 +148,7 @@ class RunAlgorithm:
         run_count = 0
 
         for run in range(1):
-            for benchmark in range(15, 16):
+            for benchmark in range(16):
                 nT = 1
                 tT = 0
                 nt_list.append(nT)
@@ -137,7 +161,7 @@ class RunAlgorithm:
                 run_number_list.append(run_count)
                 run_count += 1
 
-        pool = ThreadPool(16)
+        pool = ThreadPool()
         pool.starmap(RunAlgorithm.process_function, zip(nt_list, tt_list, benchmark_list, run_list, dimensions_type_list, algorithm_list, archive_strategy_list, run_number_list))
         pool.close()
         pool.join()

@@ -75,6 +75,10 @@ class ArchiveDynamic:
     def save_the_archive(self):
         self.__save_archive()
 
+    def reinitialize_archive(self):
+        self.__save_archive()
+        self.archive_particles = []
+
 # ----------------------------------------------------# Private #---------------------------------------------------- #
 
     def __check_if_dominated(self, particle):

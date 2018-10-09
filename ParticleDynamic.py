@@ -59,7 +59,7 @@ class ParticleDynamic:
 
             # adjust maximum position if necessary
             if self.position_indexes[i] > self.bounds[i][1]:
-                self.position_indexes[i] = self.bounds[i][1]
+                self.position_indexes[i] = self.bounds[i][0]
 
             # adjust minimum position if necessary
             if self.position_indexes[i] < self.bounds[i][0]:

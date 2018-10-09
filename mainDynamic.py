@@ -9,7 +9,7 @@ def set_true_pof():
 
 
 def run_algorithm():
-    RunAlgorithm.RunAlgorithm(0, 1, 0)
+    RunAlgorithm.RunAlgorithm(0, 3, 0)
 
 
 def test_run_algorithm():
