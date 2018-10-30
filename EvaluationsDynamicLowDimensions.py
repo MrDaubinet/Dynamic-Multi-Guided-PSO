@@ -405,11 +405,13 @@ class EvaluationsDynamic:
                     H = EvaluationsDynamic.__fda2_H(self.get_t())
                     x_vector = [x_1, 0, H]
                     f_2 = EvaluationsDynamic.__fda2_f2(x_vector, self.get_t())
-
                     pof.append(f_2)
-                if max(pof) != 0:
-                    self.__save_true_pof(pof, pof_count)
-                    pof_count += 1
+
+                # if max(pof) != 0:
+                #     self.__save_true_pof(pof, pof_count)
+                #     pof_count += 1
+                self.__save_true_pof(pof, pof_count)
+                pof_count += 1
                 prev_t = self.get_t()
 
     # ----------------------------------------------- FDA2_camara ------------------------------------------------------------ #
@@ -495,6 +497,8 @@ class EvaluationsDynamic:
                     H = EvaluationsDynamic.__fda2_camara_H(self.get_t())
                     if H != 0:
                         pof.append(1 - math.pow(f_1, H))
+                    else:
+                        pof.append(0)
                 self.__save_true_pof(pof, pof_count)
                 pof_count += 1
                 prev_t = self.get_t()

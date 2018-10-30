@@ -1,6 +1,7 @@
 import random
 import math
 
+
 class ParticleDynamic:
     def __init__(self, num_dimensions, objective_type, bounds, w, c1, c2, c3, charged):
         self.position_indexes = []          # particle position

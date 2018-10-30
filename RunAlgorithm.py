@@ -17,9 +17,11 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 class RunAlgorithm:
     def __init__(self, algorithm, archive_strategy, dimensions):
-        self.set_start_threads(algorithm, archive_strategy, dimensions)
+        # self.set_start_threads(algorithm, archive_strategy, dimensions)
+        self.set_test_start_threads(algorithm, archive_strategy, dimensions)
 
-    def set_start_threads(self, algorithm, archive_strategy, dimensions):
+    @staticmethod
+    def set_start_threads(algorithm, archive_strategy, dimensions):
         print("Algorithm: "+str(algorithm))
         print("Archive Strategy: "+str(archive_strategy))
         print("Dimension: "+str(dimensions))
@@ -35,7 +37,7 @@ class RunAlgorithm:
         run_count = 0
         run_total = 10*16*3*3
         print("Total number of runs: "+str(run_total))
-        for run in range(0, 10):
+        for run in range(30):
             for benchmark in range(16):
                 for nT in range(3):
                     for tT in range(3):
@@ -50,7 +52,7 @@ class RunAlgorithm:
                         run_count += 1
 
         pool = ThreadPool()
-        pool.starmap(self.process_function, zip(nt_list, tt_list, benchmark_list, run_list, dimensions_type_list, algorithm_list, archive_strategy_list, run_number_list))
+        pool.starmap(RunAlgorithm.process_function, zip(nt_list, tt_list, benchmark_list, run_list, dimensions_type_list, algorithm_list, archive_strategy_list, run_number_list))
         pool.close()
         pool.join()
 
@@ -136,7 +138,8 @@ class RunAlgorithm:
                 QMGPSODynamicStrategy4.PSODynamic(1000, evaluations_dynamic)
                 return
 
-    def set_test_start_threads(self, algorithm, archive_strategy, dimensions):
+    @staticmethod
+    def set_test_start_threads(algorithm, archive_strategy, dimensions):
         nt_list = []
         tt_list = []
         benchmark_list = []
@@ -147,9 +150,9 @@ class RunAlgorithm:
         run_number_list = []
         run_count = 0
 
-        for run in range(1):
-            for benchmark in range(16):
-                nT = 1
+        for run in range(30):
+            for benchmark in [3]:
+                nT = 0
                 tT = 0
                 nt_list.append(nT)
                 tt_list.append(tT)

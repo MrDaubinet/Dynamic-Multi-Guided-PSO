@@ -18,7 +18,7 @@ class PSODynamic:
         evaluations = dynamic_evaluations
         objective_functions = evaluations.get_objective_functions()
         num_particles = evaluations.get_num_particles()
-        archive = ArchiveDynamic.ArchiveDynamic(sum(num_particles), evaluations, "MGPSO", "Archive Strategy 2", evaluations.get_dimensions_type())
+        archive = ArchiveDynamic.ArchiveDynamic(sum(num_particles), evaluations, "MGPSO", "Archive Strategy 4", evaluations.get_dimensions_type())
         constants = evaluations.get_constants()
         objective_types = evaluations.get_objective_types()
         dimensions = evaluations.get_num_dimensions()
@@ -43,7 +43,7 @@ class PSODynamic:
             swarms.append(copy.deepcopy(swarm))
 
         # begin optimization loop
-
+        PSODynamic.set_guide_influence(swarms, current_guide_influence)
         iteration = 1
         evaluations.update_t(iteration)
         prev_t = evaluations.get_t()
@@ -146,7 +146,6 @@ class PSODynamic:
         """
         for swarm_index in range(len(swarms)):
             for particle_index in range(len(swarms[swarm_index])):
-                swarms[swarm_index][particle_index].pbest_position_indexes = []
                 swarms[swarm_index][particle_index].guide_influence = current_guide_influence
         return
 

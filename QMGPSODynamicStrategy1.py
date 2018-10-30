@@ -19,7 +19,7 @@ class PSODynamic:
         evaluations = dynamic_evaluations
         objective_functions = evaluations.get_objective_functions()
         num_particles = evaluations.get_num_particles()
-        archive = ArchiveDynamic.ArchiveDynamic(sum(num_particles), evaluations, "MGPSO", "Archive Strategy 1", evaluations.get_dimensions_type())
+        archive = ArchiveDynamic.ArchiveDynamic(sum(num_particles), evaluations, "Quantum MGPSO", "Archive Strategy 1", evaluations.get_dimensions_type())
         constants = evaluations.get_constants()
         objective_types = evaluations.get_objective_types()
         dimensions = evaluations.get_num_dimensions()

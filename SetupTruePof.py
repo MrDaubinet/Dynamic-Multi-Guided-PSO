@@ -4,14 +4,14 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 class SetupTruePof:
     def __init__(self):
-        self.set_start_threads()
         # self.set_start_threads()
+        self.set_test_start_threads()
 
     def set_start_threads(self):
         nt_list = []
         tt_list = []
         benchmark_list = []
-        for benchmark in range(16):
+        for benchmark in range(3, 5):
             for nT in range(3):
                 for tT in range(3):
                     nt_list.append(nT)
@@ -51,7 +51,7 @@ class SetupTruePof:
         nt_list = []
         tt_list = []
         benchmark_list = []
-        for benchmark in range(15, 16):
+        for benchmark in range(3, 4):
             nT = 1
             tT = 0
             nt_list.append(nT)
@@ -63,4 +63,3 @@ class SetupTruePof:
         pool.starmap(SetupTruePof.process_function, zip(nt_list, tt_list, benchmark_list))
         pool.close()
         pool.join()
-

@@ -208,14 +208,14 @@ class ArchiveDynamic:
     def __save_archive(self):
         objective_names = self.evaluation.get_objective_names()
         for objective_index in range(len(objective_names)):
-            file_directory_pof = "Dynamic POF/"+self.algorithm_name+"/"+self.archive_strategy+"/"+self.dimensionality+"/nT_"+str(self.evaluation.severity_of_change)+"_tT_"+str(self.evaluation.frequency_of_change)+"/"+objective_names[objective_index]+"/run_"+str(self.evaluation.get_run())+"/archive_"+str(self.__archive_count)
+            file_directory_pof = "../Dynamic POF/"+self.algorithm_name+"/"+self.archive_strategy+"/"+self.dimensionality+"/nT_"+str(self.evaluation.severity_of_change)+"_tT_"+str(self.evaluation.frequency_of_change)+"/"+objective_names[objective_index]+"/run_"+str(self.evaluation.get_run())+"/archive_"+str(self.__archive_count)
             if not os.path.exists(os.path.dirname(file_directory_pof)):
                 os.makedirs(os.path.dirname(file_directory_pof))
             file_writer = open(file_directory_pof, 'w')
             file_writer.close()
         for particle_index in range(len(self.archive_particles)):
             for objective_index in range(len(self.archive_particles[particle_index].objective_values)):
-                file_directory_pof = "Dynamic POF/" + self.algorithm_name + "/" + self.archive_strategy + "/" + self.dimensionality + "/nT_" + str(self.evaluation.severity_of_change) + "_tT_" + str(
+                file_directory_pof = "../Dynamic POF/" + self.algorithm_name + "/" + self.archive_strategy + "/" + self.dimensionality + "/nT_" + str(self.evaluation.severity_of_change) + "_tT_" + str(
                     self.evaluation.frequency_of_change) + "/" + objective_names[objective_index] + "/run_" + str(self.evaluation.get_run()) + "/archive_" + str(self.__archive_count)
                 file_writer = open(file_directory_pof, 'a')
                 file_writer.write("%s\n" % self.archive_particles[particle_index].objective_values[objective_index])
