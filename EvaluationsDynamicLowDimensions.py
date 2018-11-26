@@ -95,7 +95,7 @@ class EvaluationsDynamic:
     def get_dimensions_type(self):
         return self.__dimension_type
 
-    # ----------------------------------------------- DIMP2 ------------------------------------------------------------ #
+    # ----------------------------------------------- DIMP2 0 ------------------------------------------------------------ #
     @staticmethod
     def __dimp2_constants():
         return [0.475, 1.80, 1.10, 1.80]
@@ -165,7 +165,7 @@ class EvaluationsDynamic:
 
         self.__save_true_pof(pof, 0)
 
-    # ----------------------------------------------- FDA1 ------------------------------------------------------------ #
+    # ----------------------------------------------- FDA1 1 ------------------------------------------------------------ #
 
     @staticmethod
     def __fda1_constants():
@@ -235,7 +235,7 @@ class EvaluationsDynamic:
 
         self.__save_true_pof(pof, 0)
 
-    # ----------------------------------------------- FDA1_zhou (ZJZ) ------------------------------------------------------------ #
+    # ----------------------------------------------- FDA1_zhou (ZJZ) 2 ------------------------------------------------------------ #
 
     @staticmethod
     def __fda1_zhou_constants():
@@ -319,7 +319,7 @@ class EvaluationsDynamic:
                 pof_count += 1
                 prev_t = self.get_t()
 
-    # ----------------------------------------------- FDA2 ------------------------------------------------------------ #
+    # ----------------------------------------------- FDA2 3 ------------------------------------------------------------ #
 
     @staticmethod
     def __fda2_constants():
@@ -338,8 +338,11 @@ class EvaluationsDynamic:
 
     @staticmethod
     def __fda2_h(x, t):
-        return_value = 1 - math.pow((EvaluationsDynamic.__fda2_f1(x)/EvaluationsDynamic.__fda2_g(x)), EvaluationsDynamic.__fda2_H_2(x, t))
-        return return_value
+        try:
+            return_value = 1 - math.pow((EvaluationsDynamic.__fda2_f1(x)/EvaluationsDynamic.__fda2_g(x)), EvaluationsDynamic.__fda2_H_2(x, t))
+            return return_value
+        except ValueError:
+            raise
 
     @staticmethod
     def __fda2_H(t):
@@ -348,19 +351,26 @@ class EvaluationsDynamic:
 
     @staticmethod
     def __fda2_H_2(x, t):
-        sum = 0
-        for x_i in range(2, len(x)):
-            sum += math.pow((x[x_i] - EvaluationsDynamic.__fda2_H(t)), 2)
-        H = EvaluationsDynamic.__fda2_H(t)
-        if H == 0 and sum == 0:
-            return 0
-        return_value = math.pow((H + sum), -1)
-        return return_value
+        try:
+            sum = 0
+            for x_i in range(2, len(x)):
+                sum += math.pow((x[x_i] - EvaluationsDynamic.__fda2_H(t)), 2)
+            H = EvaluationsDynamic.__fda2_H(t)
+            # if H == 0 and sum == 0:
+            #     return 0
+            return_value = math.pow((H + sum), -1)
+            return return_value
+        except ValueError:
+            raise
 
     @staticmethod
     def __fda2_f2(x, t, r_i=None):
-        return_value = EvaluationsDynamic.__fda2_g(x) * EvaluationsDynamic.__fda2_h(x, t)
-        return return_value
+        try:
+            return_value = EvaluationsDynamic.__fda2_g(x) * EvaluationsDynamic.__fda2_h(x, t)
+            # catch the out of bounds error here
+            return return_value
+        except ValueError:
+            return float('inf')
 
     def fda2(self):
         self.__current_bench = self.__current_bench = 'bench_3'
@@ -408,13 +418,13 @@ class EvaluationsDynamic:
                     pof.append(f_2)
 
                 # if max(pof) != 0:
-                #     self.__save_true_pof(pof, pof_count)
-                #     pof_count += 1
+                #     # indicate that we have a non existent pof
+                #     test = True
                 self.__save_true_pof(pof, pof_count)
                 pof_count += 1
                 prev_t = self.get_t()
 
-    # ----------------------------------------------- FDA2_camara ------------------------------------------------------------ #
+    # ----------------------------------------------- FDA2_camara 4 ------------------------------------------------------------ #
 
     @staticmethod
     def __fda2_camara_constants():
@@ -495,15 +505,16 @@ class EvaluationsDynamic:
                 for sample_index in range(max_samples):
                     f_1 = 1 / 1000 * sample_index
                     H = EvaluationsDynamic.__fda2_camara_H(self.get_t())
-                    if H != 0:
-                        pof.append(1 - math.pow(f_1, H))
-                    else:
-                        pof.append(0)
+                    # if H != 0:
+                    #     pof.append(1 - math.pow(f_1, H))
+                    # else:
+                    #     pof.append(0)
+                    pof.append(1 - math.pow(f_1, H))
                 self.__save_true_pof(pof, pof_count)
                 pof_count += 1
                 prev_t = self.get_t()
 
-    # ----------------------------------------------- FDA3 ------------------------------------------------------------ #
+    # ----------------------------------------------- FDA3 5 ------------------------------------------------------------ #
 
     @staticmethod
     def __fda3_constants():
@@ -589,7 +600,7 @@ class EvaluationsDynamic:
                 pof_count += 1
                 prev_t = self.get_t()
 
-    # ----------------------------------------------- FDA3_camara ------------------------------------------------------------ #
+    # ----------------------------------------------- FDA3_camara 6 ------------------------------------------------------------ #
 
     @staticmethod
     def __fda3_camara_constants():
@@ -666,13 +677,13 @@ class EvaluationsDynamic:
                 pof = []
                 for sample_index in range(max_samples):
                     f_1 = 1 / 1000 * sample_index
-                    g = EvaluationsDynamic.__fda3_G(self.get_t())
+                    g = EvaluationsDynamic.__fda3_camara_G(self.get_t())
                     pof.append((1 + g) * (1 - math.sqrt(f_1 / (1 + g))))
                 self.__save_true_pof(pof, pof_count)
                 pof_count += 1
                 prev_t = self.get_t()
 
-    # ----------------------------------------------- DMOP2 ------------------------------------------------------------ #
+    # ----------------------------------------------- DMOP2 7 ------------------------------------------------------------ #
     @staticmethod
     def __dmop2_constants():
         return [0.475, 1.80, 1.10, 1.80]
@@ -749,7 +760,7 @@ class EvaluationsDynamic:
                 pof = []
                 for sample_index in range(max_samples):
                     x_1 = 1 / 1000 * sample_index
-                    G = EvaluationsDynamic.__dmop2_dec_G(self.get_t())
+                    G = EvaluationsDynamic.__dmop2_G(self.get_t())
                     x_vector = [x_1, G]
                     f_2 = EvaluationsDynamic.__dmop2_f2(x_vector, self.get_t())
                     # check if f_2 is bigger than any other f_2 in the pof
@@ -758,7 +769,7 @@ class EvaluationsDynamic:
                 pof_count += 1
                 prev_t = self.get_t()
 
-    # ----------------------------------------------- DMOP3 ------------------------------------------------------------ #
+    # ----------------------------------------------- DMOP3 8 ------------------------------------------------------------ #
     @staticmethod
     def __dmop3_constants():
         return [0.475, 1.80, 1.10, 1.80]
@@ -829,7 +840,7 @@ class EvaluationsDynamic:
 
         self.__save_true_pof(pof, 0)
 
-    # ----------------------------------------------- DMOP2_iso ------------------------------------------------------------ #
+    # ----------------------------------------------- DMOP2_iso 9 ------------------------------------------------------------ #
     @staticmethod
     def __dmop2_iso_constants():
         return [0.475, 1.80, 1.10, 1.80]
@@ -913,13 +924,13 @@ class EvaluationsDynamic:
                 pof = []
                 for sample_index in range(max_samples):
                     f_1 = 1 / 1000 * sample_index
-                    H = EvaluationsDynamic.__dmop2_H(self.get_t())
+                    H = EvaluationsDynamic.__dmop2_iso_H(self.get_t())
                     pof.append(1 - math.pow(f_1, H))
                 self.__save_true_pof(pof, pof_count)
                 pof_count += 1
                 prev_t = self.get_t()
 
-    # ----------------------------------------------- DMOP2_dec ------------------------------------------------------------ #
+    # ----------------------------------------------- DMOP2_dec 10 ------------------------------------------------------------ #
     @staticmethod
     def __dmop2_dec_constants():
         return [0.475, 1.80, 1.10, 1.80]
@@ -1005,14 +1016,14 @@ class EvaluationsDynamic:
                     x_1 = 1 / 1000 * sample_index
                     G = EvaluationsDynamic.__dmop2_dec_G(self.get_t())
                     x_vector = [x_1, G]
-                    f_2 = EvaluationsDynamic.__dmop2_f2(x_vector, self.get_t())
+                    f_2 = EvaluationsDynamic.__dmop2_dec_f2(x_vector, self.get_t())
                     # check if f_2 is bigger than any other f_2 in the pof
                     pof.append(f_2)
                 self.__save_true_pof(pof, pof_count)
                 pof_count += 1
                 prev_t = self.get_t()
 
-    # ----------------------------------------------- HE1 ------------------------------------------------------------ #
+    # ----------------------------------------------- HE1 11 ------------------------------------------------------------ #
     @staticmethod
     def __he_1_constants():
         return [0.475, 1.80, 1.10, 1.80]
@@ -1082,7 +1093,7 @@ class EvaluationsDynamic:
                     x_vector = [x_1, 0]
                     f_2 = EvaluationsDynamic.__he_1_f2(x_vector, self.get_t())
                     if pof:
-                        if all(i > f_2 for i in pof):
+                        if all(f_2 < i for i in pof):
                             pof.append(f_2)
                             pof_x.append(x_1)
                     else:
@@ -1092,7 +1103,7 @@ class EvaluationsDynamic:
                 pof_count += 1
                 prev_t = self.get_t()
 
-    # ----------------------------------------------- HE2 ------------------------------------------------------------ #
+    # ----------------------------------------------- HE2 12 ------------------------------------------------------------ #
     @staticmethod
     def __he_2_constants():
         return [0.475, 1.80, 1.10, 1.80]
@@ -1111,12 +1122,12 @@ class EvaluationsDynamic:
     @staticmethod
     def __he_2_h(x, t):
         return_value = 1 - math.pow(math.sqrt(EvaluationsDynamic.__he_2_f1(x) /
-            EvaluationsDynamic.__he_2_g(x)), EvaluationsDynamic.__h_2_H(t)) - math.pow((EvaluationsDynamic.__he_2_f1(x) /
-            EvaluationsDynamic.__he_2_g(x)), EvaluationsDynamic.__h_2_H(t))*math.sin(10*math.pi*EvaluationsDynamic.__he_2_f1(x))
+            EvaluationsDynamic.__he_2_g(x)), EvaluationsDynamic.__he_2_H(t)) - math.pow((EvaluationsDynamic.__he_2_f1(x) /
+            EvaluationsDynamic.__he_2_g(x)), EvaluationsDynamic.__he_2_H(t)) * math.sin(10*math.pi*EvaluationsDynamic.__he_2_f1(x))
         return return_value
 
     @staticmethod
-    def __h_2_H(t):
+    def __he_2_H(t):
         return_value = 0.75*math.sin(0.5*math.pi*t) + 1.25
         return return_value
 
@@ -1180,108 +1191,7 @@ class EvaluationsDynamic:
                 pof_count += 1
                 prev_t = self.get_t()
 
-    # ----------------------------------------------- HE3 ------------------------------------------------------------ #
-    @staticmethod
-    def __he_3_constants():
-        return [0.475, 1.80, 1.10, 1.80]
-
-    @staticmethod
-    def __he_3_f1(x, t=None, r_i=None):
-        sum_j = 0
-        j_size = 0
-        for x_i in range(1, len(x)):
-            j = (x_i + 1)
-            if j % 2 != 0:
-                sum_j += math.pow((x[x_i] - math.pow(x[0], (0.5 * (1 + ((3 * (j - 2)) / (len(x) - 2)))))), 2)
-                j_size += 1
-        return x[0] + (2 / j_size) * sum_j
-
-    @staticmethod
-    def __he_3_g(x):
-        sum_j = 0
-        j_size = 0
-        for x_i in range(1, len(x)):
-            j = (x_i + 1)
-            if j % 2 == 0:
-                sum_j += math.pow((x[x_i] - math.pow(x[0], (0.5 * (1 + ((3 * (j - 2)) / (len(x) - 2)))))), 2)
-                j_size += 1
-        return 2 - math.sqrt(x[0]) + (2 / j_size) * sum_j
-
-    @staticmethod
-    def __he_3_h(x, t):
-        return_value = 1 - math.pow((EvaluationsDynamic.__he_3_f1(x) / EvaluationsDynamic.__he_3_g(x)), EvaluationsDynamic.__he_3_H(t))
-        return return_value
-
-    @staticmethod
-    def __he_3_H(t):
-        return_value = 0.75 * math.sin(0.5 * math.pi * t) + 1.25
-        return return_value
-
-    @staticmethod
-    def __he_3_f2(x, t=None, r_i=None):
-        return_value = EvaluationsDynamic.__he_3_g(x) * EvaluationsDynamic.__he_3_h(x, t)
-        return return_value
-
-    def he_3(self):
-        self.__current_bench = 'bench_13'
-        # number of dimensions
-        self.__num_dimensions = 3
-        self.__objectives = []
-        self.__objective_names = []
-        self.__objective_types = []
-
-        # objective 1
-        self.__objectives.append(EvaluationsDynamic.__he_3_f1)
-        # objective 2
-        self.__objectives.append(EvaluationsDynamic.__he_3_f2)
-        # objective name 1
-        self.__objective_names.append('bench_13_obj_1')
-        # objective name 2
-        self.__objective_names.append('bench_13_obj_2')
-        # objective type 1
-        self.__objective_types.append("min")
-        # objective type 2
-        self.__objective_types.append("min")
-        # number of particles
-        self.__num_particles = [25, 25]
-        # constants
-        self.__constants = EvaluationsDynamic.__he_3_constants()
-        # selection size
-        self.__tournament_selection_size = 3
-        # bounds
-        self.__bounds = []
-        for loop in range(self.__num_dimensions):
-            self.__bounds.append([0, 1])
-
-    def he_3_generate_pof(self, max_samples):
-        pof_count = 0
-        prev_t = -1
-        for iteration in range(1000):
-            self.update_t(iteration + 1)
-            if self.get_t() != prev_t:
-                pof = []
-                pof_x = []
-                for sample_index in range(max_samples):
-                    x_1 = 1 / 1000 * sample_index
-                    x_vector = [x_1]
-                    for x_i in range(1, self.__num_dimensions):
-                        j = (x_i+1)
-                        pos = math.pow(x_1, (0.5*(3*(j-2)/(self.__num_dimensions-2))))
-                        x_vector.append(pos)
-                    f_2 = EvaluationsDynamic.__he_3_f2(x_vector, self.get_t())
-                    # check if f_2 is bigger than any other f_2 in the pof
-                    if pof:
-                        if all(i > f_2 for i in pof):
-                            pof.append(f_2)
-                            pof_x.append(x_1)
-                    else:
-                        pof.append(f_2)
-                        pof_x.append(x_1)
-                self.__save_true_pof(pof, pof_count, pof_x)
-                pof_count += 1
-                prev_t = self.get_t()
-
-    # ----------------------------------------------- HE6 ------------------------------------------------------------ #
+    # ----------------------------------------------- HE6 13 ------------------------------------------------------------ #
     @staticmethod
     def __he_6_constants():
         return [0.475, 1.80, 1.10, 1.80]
@@ -1330,7 +1240,7 @@ class EvaluationsDynamic:
         return return_value
 
     def he_6(self):
-        self.__current_bench = 'bench_14'
+        self.__current_bench = 'bench_13'
         # number of dimensions
         self.__num_dimensions = 3
         self.__objectives = []
@@ -1342,9 +1252,9 @@ class EvaluationsDynamic:
         # objective 2
         self.__objectives.append(EvaluationsDynamic.__he_6_f2)
         # objective name 1
-        self.__objective_names.append('bench_14_obj_1')
+        self.__objective_names.append('bench_13_obj_1')
         # objective name 2
-        self.__objective_names.append('bench_14_obj_2')
+        self.__objective_names.append('bench_13_obj_2')
         # objective type 1
         self.__objective_types.append("min")
         # objective type 2
@@ -1357,7 +1267,7 @@ class EvaluationsDynamic:
         self.__tournament_selection_size = 3
         # bounds
         self.__bounds = [[0, 1]]
-        for loop in range(self.__num_dimensions):
+        for loop in range(1, self.__num_dimensions):
             self.__bounds.append([-1, 1])
 
     def he_6_generate_pof(self, max_samples):
@@ -1374,9 +1284,9 @@ class EvaluationsDynamic:
                     for x_i in range(1, self.__num_dimensions):
                         j = x_i+1
                         if j % 2 != 0:
-                            pos = 0.8 * x_1 * math.cos(((6 * math.pi * x_1) + (j*math.pi /self.__num_dimensions)) / 3)
+                            pos = 0.8 * x_1 * math.cos(((6 * math.pi * x_1) + (j*math.pi / self.__num_dimensions)) / 3)
                         else:
-                            pos = 0.8 * x_1 * math.sin((6 * math.pi * x_1) + (j*math.pi /self.__num_dimensions))
+                            pos = 0.8 * x_1 * math.sin((6 * math.pi * x_1) + (j*math.pi / self.__num_dimensions))
                         x_vector.append(pos)
                     f_2 = EvaluationsDynamic.__he_6_f2(x_vector, self.get_t())
                     # check if f_2 is bigger than any other f_2 in the pof
@@ -1391,7 +1301,7 @@ class EvaluationsDynamic:
                 pof_count += 1
                 prev_t = self.get_t()
 
-    # ----------------------------------------------- HE7 ------------------------------------------------------------ #
+    # ----------------------------------------------- HE7 14 ------------------------------------------------------------ #
     @staticmethod
     def __he_7_constants():
         return [0.475, 1.80, 1.10, 1.80]
@@ -1403,7 +1313,7 @@ class EvaluationsDynamic:
         for x_i in range(1, len(x)):
             j = x_i+1
             if j % 2 != 0:
-                sum_j += math.pow((x[x_i] - (0.3*math.pow(x[0], 2)*math.cos(24*math.pi*x[0] + (4*j*math.pi/len(x))) + 0.6*x[0])*math.cos(6*math.pi*x[0] + (j*math.pi/len(x)))), 2)
+                sum_j += math.pow((x[x_i] - (0.3*math.pow(x[0], 2)*math.cos(24*math.pi*x[0] + (4*j*math.pi/len(x))) + 0.6 * x[0]) * math.cos(6*math.pi*x[0] + (j*math.pi/len(x)))), 2)
                 j_size += 1
         return x[0] + (2 / j_size)*sum_j
 
@@ -1434,7 +1344,7 @@ class EvaluationsDynamic:
         return return_value
 
     def he_7(self):
-        self.__current_bench = 'bench_15'
+        self.__current_bench = 'bench_14'
         # number of dimensions
         self.__num_dimensions = 3
         self.__objectives = []
@@ -1446,9 +1356,9 @@ class EvaluationsDynamic:
         # objective 2
         self.__objectives.append(EvaluationsDynamic.__he_7_f2)
         # objective name 1
-        self.__objective_names.append('bench_15_obj_1')
+        self.__objective_names.append('bench_14_obj_1')
         # objective name 2
-        self.__objective_names.append('bench_15_obj_2')
+        self.__objective_names.append('bench_14_obj_2')
         # objective type 1
         self.__objective_types.append("min")
         # objective type 2
@@ -1461,7 +1371,7 @@ class EvaluationsDynamic:
         self.__tournament_selection_size = 3
         # bounds
         self.__bounds = [[0, 1]]
-        for loop in range(self.__num_dimensions):
+        for loop in range(1, self.__num_dimensions):
             self.__bounds.append([-1, 1])
 
     def he_7_generate_pof(self, max_samples):
@@ -1484,6 +1394,132 @@ class EvaluationsDynamic:
                             pos = a * math.sin((6 * math.pi * x_1) + (j * math.pi / self.__num_dimensions))
                         x_vector.append(pos)
                     f_2 = EvaluationsDynamic.__he_7_f2(x_vector, self.get_t())
+                    # check if f_2 is bigger than any other f_2 in the pof
+                    if pof:
+                        if all(i > f_2 for i in pof):
+                            pof.append(f_2)
+                            pof_x.append(x_1)
+                    else:
+                        pof.append(f_2)
+                        pof_x.append(x_1)
+                self.__save_true_pof(pof, pof_count, pof_x)
+                pof_count += 1
+                prev_t = self.get_t()
+
+    # ----------------------------------------------- HE9 15 ------------------------------------------------------------ #
+    @staticmethod
+    def __he_9_constants():
+        return [0.475, 1.80, 1.10, 1.80]
+
+    @staticmethod
+    def __he_9_f1(x, t=None, r_i=None):
+        sum_j = 0
+        j_size = 0
+        for x_i in range(1, len(x)):
+            j = x_i + 1
+            if j % 2 != 0:
+                sum_j_2 = 0
+                sum_j_3 = 0
+                for x_i_2 in range(1, len(x)):
+                    j_2 = x_i_2 + 1
+                    if j % 2 != 0:
+                        sum_j_2 += math.pow(EvaluationsDynamic.__he_9_y(x, x_i_2, j_2), 2)
+                for x_i_3 in range(1, len(x)):
+                    j_3 = x_i_3 + 1
+                    if j % 2 != 0:
+                        sum_j_3 *= math.cos((20*EvaluationsDynamic.__he_9_y(x, x_i_3, j_3)*math.pi)/math.sqrt(j_3))
+                sum_j += (4 * sum_j_2) - sum_j_3 + 2
+                j_size += 1
+        return x[0] + (2 / j_size) * sum_j
+
+    @staticmethod
+    def __he_9_y(x, x_i, j):
+        return_value = x[x_i] - math.pow(x[0], (0.5 * (1.0 + (3*(j - 2)/(len(x) - 2)))))
+        return return_value
+
+    @staticmethod
+    def __he_9_g(x):
+        sum_j = 0
+        j_size = 0
+        for x_i in range(1, len(x)):
+            j = x_i + 1
+            if j % 2 == 0:
+                sum_j_2 = 0
+                sum_j_3 = 0
+                for x_i_2 in range(1, len(x)):
+                    j_2 = x_i_2 + 1
+                    if j % 2 == 0:
+                        sum_j_2 += math.pow(EvaluationsDynamic.__he_9_y(x, x_i_2, j_2), 2)
+                for x_i_3 in range(1, len(x)):
+                    j_3 = x_i_3 + 1
+                    if j % 2 == 0:
+                        sum_j_3 *= math.cos((20 * EvaluationsDynamic.__he_9_y(x, x_i_3, j_3) * math.pi) / math.sqrt(j_3))
+                sum_j += (4 * sum_j_2) - (2 * sum_j_3) + 2
+                j_size += 1
+        return 2 - math.sqrt(x[0]) + (2 / j_size) * sum_j
+
+    @staticmethod
+    def __he_9_h(x, t):
+        return_value = 1 - math.pow((EvaluationsDynamic.__he_9_f1(x) / EvaluationsDynamic.__he_9_g(x)), EvaluationsDynamic.__he_9_H(t))
+        return return_value
+
+    @staticmethod
+    def __he_9_H(t):
+        return_value = 0.75 * math.sin(0.5 * math.pi * t) + 1.25
+        return return_value
+
+    @staticmethod
+    def __he_9_f2(x, t=None, r_i=None):
+        return_value = EvaluationsDynamic.__he_9_g(x) * EvaluationsDynamic.__he_9_h(x, t)
+        return return_value
+
+    def he_9(self):
+        self.__current_bench = 'bench_15'
+        # number of dimensions
+        self.__num_dimensions = 3
+        self.__objectives = []
+        self.__objective_names = []
+        self.__objective_types = []
+
+        # objective 1
+        self.__objectives.append(EvaluationsDynamic.__he_9_f1)
+        # objective 2
+        self.__objectives.append(EvaluationsDynamic.__he_9_f2)
+        # objective name 1
+        self.__objective_names.append('bench_15_obj_1')
+        # objective name 2
+        self.__objective_names.append('bench_15_obj_2')
+        # objective type 1
+        self.__objective_types.append("min")
+        # objective type 2
+        self.__objective_types.append("min")
+        # number of particles
+        self.__num_particles = [25, 25]
+        # constants
+        self.__constants = EvaluationsDynamic.__he_9_constants()
+        # selection size
+        self.__tournament_selection_size = 3
+        # bounds
+        self.__bounds = []
+        for loop in range(self.__num_dimensions):
+            self.__bounds.append([0, 1])
+
+    def he_9_generate_pof(self, max_samples):
+        pof_count = 0
+        prev_t = -1
+        for iteration in range(1000):
+            self.update_t(iteration + 1)
+            if self.get_t() != prev_t:
+                pof = []
+                pof_x = []
+                for sample_index in range(max_samples):
+                    x_1 = 1 / 1000 * sample_index
+                    x_vector = [x_1]
+                    for x_i in range(1, self.__num_dimensions):
+                        j = (x_i + 1)
+                        pos = math.pow(x_1, (0.5 * (3 * (j - 2) / (self.__num_dimensions - 2))))
+                        x_vector.append(pos)
+                    f_2 = EvaluationsDynamic.__he_9_f2(x_vector, self.get_t())
                     # check if f_2 is bigger than any other f_2 in the pof
                     if pof:
                         if all(i > f_2 for i in pof):

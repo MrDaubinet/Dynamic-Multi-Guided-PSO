@@ -24,6 +24,7 @@ class PSODynamic:
         dimensions = evaluations.get_num_dimensions()
         bounds = evaluations.get_bounds()
 
+
         for objective_index in range(len(objective_functions)):
             if objective_types[objective_index] == "min":
                 best_swarm_global_fitness_values.append(float('inf'))
@@ -86,9 +87,8 @@ class PSODynamic:
             iteration += 1
 
         # print final results
+        archive.save_archive_to_file()
         print('Completed')
-        # print(best_global_positions)
-        # print(best_global_fitness_value)
 
     @staticmethod
     def reset_particle(swarms):

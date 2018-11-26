@@ -4,14 +4,15 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 class SetupTruePof:
     def __init__(self):
-        # self.set_start_threads()
-        self.set_test_start_threads()
+        SetupTruePof.set_start_threads()
+        # self.set_test_start_threads()
 
-    def set_start_threads(self):
+    @staticmethod
+    def set_start_threads():
         nt_list = []
         tt_list = []
         benchmark_list = []
-        for benchmark in range(3, 5):
+        for benchmark in range(16, 17):
             for nT in range(3):
                 for tT in range(3):
                     nt_list.append(nT)
@@ -19,7 +20,7 @@ class SetupTruePof:
                     benchmark_list.append(benchmark)
 
         # print("Creating true front nT: "+str(nT)+" tT: "+str(tT))
-        pool = ThreadPool(12)
+        pool = ThreadPool()
         pool.starmap(SetupTruePof.process_function, zip(nt_list, tt_list, benchmark_list))
         pool.close()
         pool.join()
@@ -31,13 +32,13 @@ class SetupTruePof:
         benchmarks = [
             evaluations_dynamic.dimp2, evaluations_dynamic.fda1, evaluations_dynamic.fda1_zhou, evaluations_dynamic.fda2, evaluations_dynamic.fda2_camara, evaluations_dynamic.fda3,
             evaluations_dynamic.fda3_camara, evaluations_dynamic.dmop2, evaluations_dynamic.dmop3, evaluations_dynamic.dmop2_iso, evaluations_dynamic.dmop2_dec, evaluations_dynamic.he_1,
-            evaluations_dynamic.he_2, evaluations_dynamic.he_3, evaluations_dynamic.he_6, evaluations_dynamic.he_7]
+            evaluations_dynamic.he_2, evaluations_dynamic.he_6, evaluations_dynamic.he_7, evaluations_dynamic.he_9]
 
         benchmark_pof = [
             evaluations_dynamic.dimp2_generate_pof, evaluations_dynamic.fda1_generate_pof, evaluations_dynamic.fda1_zhou_generate_pof, evaluations_dynamic.fda2_generate_pof,
             evaluations_dynamic.fda2_camara_generate_pof, evaluations_dynamic.fda3_generate_pof, evaluations_dynamic.fda3_camara_generate_pof, evaluations_dynamic.dmop2_generate_pof,
             evaluations_dynamic.dmop3_generate_pof, evaluations_dynamic.dmop2_iso_generate_pof, evaluations_dynamic.dmop2_dec_generate_pof, evaluations_dynamic.he_1_generate_pof,
-            evaluations_dynamic.he_2_generate_pof, evaluations_dynamic.he_3_generate_pof, evaluations_dynamic.he_6_generate_pof, evaluations_dynamic.he_7_generate_pof]
+            evaluations_dynamic.he_2_generate_pof, evaluations_dynamic.he_6_generate_pof, evaluations_dynamic.he_7_generate_pof, evaluations_dynamic.he_9_generate_pof]
 
         severity_of_change = [1, 10, 20]
         frequency_of_change = [10, 25, 50]
@@ -51,7 +52,7 @@ class SetupTruePof:
         nt_list = []
         tt_list = []
         benchmark_list = []
-        for benchmark in range(3, 4):
+        for benchmark in range(7, 10):
             nT = 1
             tT = 0
             nt_list.append(nT)
@@ -59,7 +60,7 @@ class SetupTruePof:
             benchmark_list.append(benchmark)
 
         # print("Creating true front nT: "+str(nT)+" tT: "+str(tT))
-        pool = ThreadPool(1)
+        pool = ThreadPool()
         pool.starmap(SetupTruePof.process_function, zip(nt_list, tt_list, benchmark_list))
         pool.close()
         pool.join()

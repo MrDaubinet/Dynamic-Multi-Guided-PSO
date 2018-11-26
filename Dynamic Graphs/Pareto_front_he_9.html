@@ -72,8 +72,8 @@
         {
             y_datas.push([]);
             x_datas.push([]);
-            test_promises.push(readTextFile("../MGPSO DYNAMIC POF/bench_12_obj_1_nt_10_Tt_10_archive_"+loop+"_run_"+0, loop, false));
-            test_promises.push(readTextFile("../MGPSO DYNAMIC POF/bench_12_obj_2_nt_10_Tt_10_archive_"+loop+"_run_"+0, loop, true));
+            test_promises.push(readTextFile("../../Best Parameters/nT_10_tT_10/bench_16_obj_1/run_0/archive_"+loop, loop, false));
+            test_promises.push(readTextFile("../../Best Parameters/nT_10_tT_10/bench_16_obj_2/run_0/archive_"+loop, loop, true));
         }
 
         Promise.all(test_promises).then(function() {
@@ -96,7 +96,7 @@
             }
 
             var layout = {
-                title: 'HE2, nt: 10, Tt: 10',
+                title: 'HE7, nt: 10, Tt: 10',
                 xaxis: {
                 title: 'f1(x)',
                 titlefont: {
@@ -126,8 +126,8 @@
         {
             true_pof_y_datas.push([]);
             true_pof_x_datas.push([]);
-            test_promises.push(read_pof_TextFile("../TRUE DYNAMIC POF/bench_12_nt_10_Tt_10_pof_"+loop, loop, true));
-            test_promises.push(read_pof_TextFile("../TRUE DYNAMIC POF/bench_12_nt_10_Tt_10_pof_x_"+loop, loop, false));
+            test_promises.push(read_pof_TextFile("../Dynamic True POF/nT_10_tT_10/bench_16/pof_"+loop, loop, true));
+            test_promises.push(read_pof_TextFile("../Dynamic True POF/nT_10_tT_10/bench_16/pof_x_"+loop, loop, false));
         }
         Promise.all(test_promises).then(function() {
             var data = [];
@@ -146,7 +146,7 @@
                 data.push(trace);
             }
             var layout = {
-                title: 'True Pareto-Front HE2',
+                title: 'True Pareto-Front HE7',
                 xaxis: {
                 title: 'f1(x)',
                 titlefont: {

@@ -1,6 +1,7 @@
 import random
 import copy
 import math
+import pickle
 import os
 
 
@@ -15,6 +16,7 @@ class ArchiveDynamic:
         self.algorithm_name = algorithm_name
         self.archive_strategy = archive_strategy
         self.dimensionality = dimensionality
+        self.pof_list = []
 
 # ------------------------------------------------------# Public #----------------------------------------------------#
     def add_to_archive(self, particle):
@@ -78,6 +80,17 @@ class ArchiveDynamic:
     def reinitialize_archive(self):
         self.__save_archive()
         self.archive_particles = []
+
+    def save_archive_to_file(self):
+        # We need to pickle the pof list
+        objective_names = self.evaluation.get_objective_names()
+        file_directory_pof = "/Dynamic POF/"+self.algorithm_name+"/"+self.archive_strategy+"/"+self.dimensionality+"/nT_"+str(self.evaluation.severity_of_change)+"_tT_"+str(self.evaluation.frequency_of_change)+"/"+"/run_"+str(self.evaluation.get_run())
+
+        with open(file_directory_pof, "wb") as fout:
+            # default protocol is zero
+            # -1 gives highest protocol and smallest data file size
+            pickle.dump(self.pof_list, fout, protocol=-1)
+        return
 
 # ----------------------------------------------------# Private #---------------------------------------------------- #
 
@@ -206,23 +219,19 @@ class ArchiveDynamic:
         return True
 
     def __save_archive(self):
-        objective_names = self.evaluation.get_objective_names()
-        for objective_index in range(len(objective_names)):
-            file_directory_pof = "../Dynamic POF/"+self.algorithm_name+"/"+self.archive_strategy+"/"+self.dimensionality+"/nT_"+str(self.evaluation.severity_of_change)+"_tT_"+str(self.evaluation.frequency_of_change)+"/"+objective_names[objective_index]+"/run_"+str(self.evaluation.get_run())+"/archive_"+str(self.__archive_count)
-            if not os.path.exists(os.path.dirname(file_directory_pof)):
-                os.makedirs(os.path.dirname(file_directory_pof))
-            file_writer = open(file_directory_pof, 'w')
-            file_writer.close()
+        # We need to save the pof to a list
+        # [[objective 1 particle values], [objective 2 particle values]]
+        objective_list = []
+        for objective_index in range(len(self.archive_particles[0].objective_values)):
+            objective_list.append([])
+
         for particle_index in range(len(self.archive_particles)):
             for objective_index in range(len(self.archive_particles[particle_index].objective_values)):
-                file_directory_pof = "../Dynamic POF/" + self.algorithm_name + "/" + self.archive_strategy + "/" + self.dimensionality + "/nT_" + str(self.evaluation.severity_of_change) + "_tT_" + str(
-                    self.evaluation.frequency_of_change) + "/" + objective_names[objective_index] + "/run_" + str(self.evaluation.get_run()) + "/archive_" + str(self.__archive_count)
-                file_writer = open(file_directory_pof, 'a')
-                file_writer.write("%s\n" % self.archive_particles[particle_index].objective_values[objective_index])
-                file_writer.close()
-        # update the archive count
-        self.__archive_count += 1
+                objective_list[objective_index].append(self.archive_particles[particle_index].objective_values[objective_index])
+        self.pof_list.append(objective_list)
         return
+
+
 
     def __generational_distance(self):
         """calculate the Generational distance:

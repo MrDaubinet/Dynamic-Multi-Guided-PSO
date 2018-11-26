@@ -73,14 +73,14 @@ class RunAlgorithm:
         benchmarks = [
             evaluations_dynamic.dimp2, evaluations_dynamic.fda1, evaluations_dynamic.fda1_zhou, evaluations_dynamic.fda2, evaluations_dynamic.fda2_camara, evaluations_dynamic.fda3,
             evaluations_dynamic.fda3_camara, evaluations_dynamic.dmop2, evaluations_dynamic.dmop3, evaluations_dynamic.dmop2_iso, evaluations_dynamic.dmop2_dec, evaluations_dynamic.he_1,
-            evaluations_dynamic.he_2, evaluations_dynamic.he_3, evaluations_dynamic.he_6, evaluations_dynamic.he_7]
+            evaluations_dynamic.he_2, evaluations_dynamic.he_6, evaluations_dynamic.he_7, evaluations_dynamic.he_9]
 
         # create the generate_pof functions from the evaluations object
-        benchmark_pof = [
-            evaluations_dynamic.dimp2_generate_pof, evaluations_dynamic.fda1_generate_pof, evaluations_dynamic.fda1_zhou_generate_pof, evaluations_dynamic.fda2_generate_pof,
-            evaluations_dynamic.fda2_camara_generate_pof, evaluations_dynamic.fda3_generate_pof, evaluations_dynamic.fda3_camara_generate_pof, evaluations_dynamic.dmop2_generate_pof,
-            evaluations_dynamic.dmop3_generate_pof, evaluations_dynamic.dmop2_iso_generate_pof, evaluations_dynamic.dmop2_dec_generate_pof, evaluations_dynamic.he_1_generate_pof,
-            evaluations_dynamic.he_2_generate_pof, evaluations_dynamic.he_3_generate_pof, evaluations_dynamic.he_6_generate_pof, evaluations_dynamic.he_7_generate_pof]
+        # benchmark_pof = [
+        #     evaluations_dynamic.dimp2_generate_pof, evaluations_dynamic.fda1_generate_pof, evaluations_dynamic.fda1_zhou_generate_pof, evaluations_dynamic.fda2_generate_pof,
+        #     evaluations_dynamic.fda2_camara_generate_pof, evaluations_dynamic.fda3_generate_pof, evaluations_dynamic.fda3_camara_generate_pof, evaluations_dynamic.dmop2_generate_pof,
+        #     evaluations_dynamic.dmop3_generate_pof, evaluations_dynamic.dmop2_iso_generate_pof, evaluations_dynamic.dmop2_dec_generate_pof, evaluations_dynamic.he_1_generate_pof,
+        #     evaluations_dynamic.he_2_generate_pof, evaluations_dynamic.he_6_generate_pof, evaluations_dynamic.he_7_generate_pof, evaluations_dynamic.he_9_generate_pof]
 
         # set the optional parameter test values
         severity_of_change = [1, 10, 20]

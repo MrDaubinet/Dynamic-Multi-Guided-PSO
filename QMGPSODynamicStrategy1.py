@@ -90,9 +90,9 @@ class PSODynamic:
             iteration += 1
 
         # print final results
+        archive.save_archive_to_file()
         print('Completed')
-        # print(best_global_positions)
-        # print(best_global_fitness_value)
+
 
     @staticmethod
     def reset_particle(swarms):

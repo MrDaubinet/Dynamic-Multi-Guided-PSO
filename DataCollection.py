@@ -511,6 +511,82 @@ def stats_acc():
     return
 
 
+def find_best_results():
+    result_matrix = load_results("acc_combinations_raw")
+    true_pof_hv = load_results("true_pof_hv")
+    # we need to tally wins and losses for each
+    ns_alg_1_matrix = list()
+    ns_alg_1_matrix.append(numpy.asarray(["Algorithm", "Archive Strategy", "Dimension", "Parameter Combination", "Accuracy", "Stability"]))
+    # [algorithm, archive_strat, dimension, param_comb]
+    best_indexes = [-1, -1, -1, -1]
+    best_values = [float('inf'), float('inf')]
+    for algorithm in range(len(result_matrix)):
+        for archive_strategy in range(len(result_matrix[algorithm])):
+            for dimension in range(len(result_matrix[algorithm][archive_strategy])):
+                for parameter_combination in range(len(result_matrix[algorithm][archive_strategy][dimension])):
+                    parameter_combination_average_hvd = list()
+                    parameter_combination_average_stab = list()
+                    for benchmark in range(len(result_matrix[algorithm][archive_strategy][dimension][parameter_combination])):
+                        benchmark_average_hvd = list()
+                        benchmark_average_stab = list()
+                        for run in range(len(result_matrix[algorithm][archive_strategy][dimension][parameter_combination][benchmark])):
+                            hvd_list = list()
+                            stab_list = list()
+                            for archive_hv in range(1, len(result_matrix[algorithm][archive_strategy][dimension][parameter_combination][benchmark][run])):
+                                # we need to find which algorithm/strategy/parameter_combination produces the best pof's for the average run overall benchmark functions
+                                # get the performance measure for the archive
+                                # calculate hvd
+                                cur_pof_volume = result_matrix[algorithm][archive_strategy][dimension][parameter_combination][benchmark][run][archive_hv]
+                                prev_pof_volume = result_matrix[algorithm][archive_strategy][dimension][parameter_combination][benchmark][run][archive_hv-1]
+                                true_pof_volume = true_pof_hv[parameter_combination][benchmark][archive_hv % len(true_pof_hv[parameter_combination][benchmark])]
+                                current_hvd = math.fabs(true_pof_volume - cur_pof_volume)
+                                prev_hvd = math.fabs(true_pof_volume - prev_pof_volume)
+                                # calculate stab
+                                stab = max(0, (prev_hvd - current_hvd))
+                                # Add the hvd and the stab to a list
+                                hvd_list.append(current_hvd)
+                                stab_list.append(stab)
+                            # add the average hvd for the first archive
+                            hvd_list.append(true_pof_hv[parameter_combination][benchmark][0] - result_matrix[algorithm][archive_strategy][dimension][parameter_combination][benchmark][run][0])
+                            # add the average for this hvd and stab to the benchmark average lists
+                            benchmark_average_hvd.append(numpy.mean(hvd_list))
+                            if math.isnan(numpy.mean(stab_list)):
+                                benchmark_average_stab.append(0)
+                            else:
+                                benchmark_average_stab.append(numpy.mean(stab_list))
+                        # reduce the list to averages
+                        benchmark_average_hvd_value = numpy.mean(benchmark_average_hvd)
+                        if math.isnan(numpy.mean(numpy.mean(benchmark_average_stab))):
+                            benchmark_average_stab_value = 0
+                        else:
+                            benchmark_average_stab_value = numpy.mean(benchmark_average_stab)
+                        parameter_combination_average_hvd.append(benchmark_average_hvd_value)
+                        parameter_combination_average_stab.append(benchmark_average_stab_value)
+                    # we need to store the average of all benchmark values
+                    parameter_combination_average_hvd_value = numpy.mean(parameter_combination_average_hvd)
+                    if math.isnan(numpy.mean(parameter_combination_average_stab)):
+                        parameter_combination_average_stab_value = 0
+                    else:
+                        parameter_combination_average_stab_value = numpy.mean(parameter_combination_average_stab)
+                    if parameter_combination_average_hvd_value < best_values[0] and parameter_combination_average_stab_value < best_values[1]:
+                        best_values[0] = parameter_combination_average_hvd_value
+                        best_values[1] = parameter_combination_average_stab_value
+
+                        best_indexes = [algorithm, archive_strategy, dimension, parameter_combination]
+                    # ns_alg_1_matrix.append(numpy.asarray(print_results(algorithm, archive_strategy, dimension, parameter_combination, parameter_combination_average_hvd_value, parameter_combination_average_stab_value)))
+                    ns_alg_1_matrix.append(numpy.asarray([algorithm, archive_strategy, dimension, parameter_combination, parameter_combination_average_hvd_value, parameter_combination_average_stab_value]))
+    # sort by the last two columns
+
+    print("Best Results")
+    # Remeber that the results for archive strategy 2 and 3 are swapped in the report (for as in archive strategy 2 in the results is actually archive strategy 3 in the report)
+    print("algorithm: "+str(best_indexes[0]) + ", archive_strategy: "+str(best_indexes[1]) + ", dimension: "+str(best_indexes[2]) + ", parameter combination: "+str(best_indexes[3]))
+    writer = pd.ExcelWriter('Results/combination_results.xlsx')
+    df1 = pd.DataFrame(numpy.asarray(ns_alg_1_matrix))
+    df1.to_excel(writer, 'Sheet1')
+    writer.save()
+    return
+
+
 def read_stab(directory):
     print("reading stab")
     # load the reference vectors
@@ -842,6 +918,45 @@ def read_stab_combinations(directory):
 # --------------------- HELPER METHODS --------------------- #
 
 
+def print_results(algorithm, archive_strategy, dimension, parameter_combination, parameter_combination_average_hvd_value, parameter_combination_average_stab_value):
+    return_list = list()
+    algorithm_name = None
+    dimension_name = None
+    parameter_combination_name = None
+    if algorithm == 0:
+        algorithm_name = "D-MGPSO"
+    elif algorithm == 1:
+        algorithm_name = "D-QMGPSO"
+
+    if dimension == 0:
+        dimension_name = "Large"
+    elif dimension == 1:
+        dimension_name = "Low"
+    elif dimension == 2:
+        dimension_name = "Medium"
+
+    if parameter_combination == 0:
+        parameter_combination_name = "nT_1_tT_10"
+    elif parameter_combination == 1:
+        parameter_combination_name = "nT_1_tT_25"
+    elif parameter_combination == 2:
+        parameter_combination_name = "nT_1_tT_50"
+    elif parameter_combination == 3:
+        parameter_combination_name = "nT_10_tT_10"
+    elif parameter_combination == 4:
+        parameter_combination_name = "nT_10_tT_25"
+    elif parameter_combination == 5:
+        parameter_combination_name = "nT_10_tT_50"
+    elif parameter_combination == 6:
+        parameter_combination_name = "nT_20_tT_10"
+    elif parameter_combination == 7:
+        parameter_combination_name = "nT_20_tT_25"
+    elif parameter_combination == 8:
+        parameter_combination_name = "nT_20_tT_50"
+
+    return [algorithm_name, archive_strategy, dimension_name, parameter_combination_name, parameter_combination_average_hvd_value, parameter_combination_average_stab_value]
+
+
 def get_true_pof_hv(directory):
     true_pof = load_results("true_pof")
     ref_x = load_results("x_max_reference")
@@ -945,10 +1060,11 @@ def load_results(fname="result_matrix.pkl"):
 # stats_ns()
 # save_true_pof("Dynamic True POF")
 # read_acc("../Dynamic POF")
-# stats_acc()
+stats_acc()
 # read_stab("../Dynamic POF")
-stats_stab()
+# stats_stab()
 # get_true_pof_hv("../Dynamic POF")
 # collect_data_specific("../Dynamic POF", ["MGPSO"], ["Archive Strategy 3_result_matrix.pkl"], ["Medium Dimensions"], [2], ["nT_1_tT_25"], [1], [11])
 
 # load_results("../Dynamic POF/MGPSO/Archive Strategy 2_result_matrix.pkl")
+# find_best_results()
