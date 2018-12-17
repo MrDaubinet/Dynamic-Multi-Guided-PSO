@@ -59,10 +59,10 @@ class ParticleDynamic:
 
             # adjust maximum position if necessary
             if self.position_indexes[i] > self.bounds[i][1]:
-                self.position_indexes[i] = self.bounds[i][0]
+                self.position_indexes[i] = random.uniform(self.bounds[i][0], self.bounds[i][1])
 
             # adjust minimum position if necessary
             if self.position_indexes[i] < self.bounds[i][0]:
-                self.position_indexes[i] = self.bounds[i][0]
+                self.position_indexes[i] = random.uniform(self.bounds[i][0], self.bounds[i][1])
 
         return

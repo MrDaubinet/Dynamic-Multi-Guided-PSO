@@ -62,7 +62,8 @@ class ParticleDynamic:
             if self.is_charged:
                 # we have our center particle
                 center = self.gbest_position_indexes[i]
-                radius = (math.fabs(self.bounds[i][0]) + math.fabs(self.bounds[i][1]))/4
+                # radius = (math.fabs(self.bounds[i][0]) + math.fabs(self.bounds[i][1]))/4
+                radius = 0.5
 
                 upper_bound = center + radius
                 lower_bound = center - radius
@@ -73,7 +74,7 @@ class ParticleDynamic:
                 if upper_bound > self.bounds[i][1]:
                     upper_bound = self.bounds[i][1]
 
-                self.position_indexes[i] = random.uniform(lower_bound, upper_bound)
+                self.position_indexes[i] = random.triangular(lower_bound, upper_bound, center)
             else:
                 self.position_indexes[i] = self.position_indexes[i] + self.velocity_indexes[i]
                 # adjust maximum position if necessary

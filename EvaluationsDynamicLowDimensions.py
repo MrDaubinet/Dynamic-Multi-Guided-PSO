@@ -1,5 +1,6 @@
 import math
 import random
+import pickle
 import os
 
 
@@ -14,7 +15,7 @@ class EvaluationsDynamic:
         self.__constants = []
         self.__tournament_selection_size = None
         self.__extra_bounds = None
-        self.__current_bench = None
+        self.current_bench = None
         self.__true_pof = None
         self.severity_of_change = None
         self.frequency_of_change = None
@@ -58,7 +59,7 @@ class EvaluationsDynamic:
         if self.__true_pof is None:
             self.__true_pof = []
             # extract the true pof from the textfile
-            with open("Static True POF/" + self.__current_bench + ".pf") as f:
+            with open("Static True POF/" + self.current_bench + ".pf") as f:
                 content = f.readlines()
             # you may also want to remove whitespace characters like `\n` at the end of each line
             content = [x.strip() for x in content]
@@ -128,7 +129,7 @@ class EvaluationsDynamic:
         return return_value
 
     def dimp2(self):
-        self.__current_bench = self.__current_bench = 'bench_0'
+        self.current_bench = self.current_bench = '0'
         # number of dimensions
         self.__num_dimensions = 2
         self.__objectives = []
@@ -198,7 +199,7 @@ class EvaluationsDynamic:
         return return_value
 
     def fda1(self):
-        self.__current_bench = self.__current_bench = 'bench_1'
+        self.current_bench = self.current_bench = '1'
         # number of dimensions
         self.__num_dimensions = 2
         self.__objectives = []
@@ -274,7 +275,7 @@ class EvaluationsDynamic:
         return return_value
 
     def fda1_zhou(self):
-        self.__current_bench = self.__current_bench = 'bench_2'
+        self.current_bench = self.current_bench = '2'
         # number of dimensions
         self.__num_dimensions = 2
         self.__objectives = []
@@ -373,7 +374,7 @@ class EvaluationsDynamic:
             return float('inf')
 
     def fda2(self):
-        self.__current_bench = self.__current_bench = 'bench_3'
+        self.current_bench = self.current_bench = '3'
         # number of dimensions
         self.__num_dimensions = 3
         self.__objectives = []
@@ -465,7 +466,7 @@ class EvaluationsDynamic:
         return return_value
 
     def fda2_camara(self):
-        self.__current_bench = 'bench_4'
+        self.current_bench = '4'
         # number of dimensions
         self.__num_dimensions = 3
         self.__objectives = []
@@ -555,7 +556,7 @@ class EvaluationsDynamic:
         return return_value
 
     def fda3(self):
-        self.__current_bench = 'bench_5'
+        self.current_bench = '5'
         # number of dimensions
         self.__num_dimensions = 2
         self.__objectives = []
@@ -638,7 +639,7 @@ class EvaluationsDynamic:
         return return_value
 
     def fda3_camara(self):
-        self.__current_bench = 'bench_6'
+        self.current_bench = '6'
         # number of dimensions
         self.__num_dimensions = 2
         self.__objectives = []
@@ -721,7 +722,7 @@ class EvaluationsDynamic:
         return return_value
 
     def dmop2(self):
-        self.__current_bench = 'bench_7'
+        self.current_bench = '7'
         # number of dimensions
         self.__num_dimensions = 2
         self.__objectives = []
@@ -802,7 +803,7 @@ class EvaluationsDynamic:
         return return_value
 
     def dmop3(self):
-        self.__current_bench = 'bench_8'
+        self.current_bench = '8'
         # number of dimensions
         self.__num_dimensions = 2
         self.__objectives = []
@@ -885,7 +886,7 @@ class EvaluationsDynamic:
         return return_value
 
     def dmop2_iso(self):
-        self.__current_bench = 'bench_9'
+        self.current_bench = '9'
         # number of dimensions
         self.__num_dimensions = 2
         self.__objectives = []
@@ -975,7 +976,7 @@ class EvaluationsDynamic:
         return return_value
 
     def dmop2_dec(self):
-        self.__current_bench = 'bench_10'
+        self.current_bench = '10'
         # number of dimensions
         self.__num_dimensions = 2
         self.__objectives = []
@@ -1050,7 +1051,7 @@ class EvaluationsDynamic:
         return return_value
 
     def he_1(self):
-        self.__current_bench = 'bench_11'
+        self.current_bench = '11'
         # number of dimensions
         self.__num_dimensions = 2
         self.__objectives = []
@@ -1137,7 +1138,7 @@ class EvaluationsDynamic:
         return return_value
 
     def he_2(self):
-        self.__current_bench = 'bench_12'
+        self.current_bench = '12'
         # number of dimensions
         self.__num_dimensions = 2
         self.__objectives = []
@@ -1240,7 +1241,7 @@ class EvaluationsDynamic:
         return return_value
 
     def he_6(self):
-        self.__current_bench = 'bench_13'
+        self.current_bench = '13'
         # number of dimensions
         self.__num_dimensions = 3
         self.__objectives = []
@@ -1344,7 +1345,7 @@ class EvaluationsDynamic:
         return return_value
 
     def he_7(self):
-        self.__current_bench = 'bench_14'
+        self.current_bench = '14'
         # number of dimensions
         self.__num_dimensions = 3
         self.__objectives = []
@@ -1474,7 +1475,7 @@ class EvaluationsDynamic:
         return return_value
 
     def he_9(self):
-        self.__current_bench = 'bench_15'
+        self.current_bench = '15'
         # number of dimensions
         self.__num_dimensions = 3
         self.__objectives = []
@@ -1534,21 +1535,23 @@ class EvaluationsDynamic:
 
     # ----------------------------------------------- Extra ------------------------------------------------------------ #
     def __save_true_pof(self, pof, iteration, pof_x=None):
-        file_directory_pof = "Dynamic True POF/nT_"+str(self.severity_of_change)+"_tT_"+str(self.frequency_of_change)+"/"+self.__current_bench+"/pof_"+str(iteration)
-        file_directory_pof_x = "Dynamic True POF/nT_" + str(self.severity_of_change) + "_tT_" + str(self.frequency_of_change) + "/" + self.__current_bench + "/pof_x_" + str(iteration)
+        file_directory_pof = "Dynamic True POF/"+str(self.severity_of_change)+"_"+str(self.frequency_of_change)+"/"+self.current_bench + "/" + str(iteration)
+        file_directory_pof_x = "Dynamic True POF/" + str(self.severity_of_change) + "_" + str(self.frequency_of_change) + "/" + self.current_bench + "/x_" + str(iteration)
+
         if not os.path.exists(os.path.dirname(file_directory_pof)):
             os.makedirs(os.path.dirname(file_directory_pof))
-        file_writer = open(file_directory_pof, 'w')
+
+        with open(file_directory_pof, "wb") as fout:
+            # default protocol is zero
+            # -1 gives highest protocol and smallest data file size
+            pickle.dump(pof, fout, protocol=-1)
+
         if pof_x:
-            file_writer_2 = open(file_directory_pof_x, 'w')
-            file_writer_2.close()
-        file_writer.close()
-        for index in range(len(pof)):
-            file_writer = open(file_directory_pof, 'a')
-            file_writer.write("%s\n" % pof[index])
-            file_writer.close()
-            if pof_x:
-                file_writer_2 = open(file_directory_pof_x, 'a')
-                file_writer_2.write("%s\n" % pof_x[index])
-                file_writer_2.close()
+            if not os.path.exists(os.path.dirname(file_directory_pof_x)):
+                os.makedirs(os.path.dirname(file_directory_pof_x))
+            with open(file_directory_pof_x, "wb") as fout:
+                # default protocol is zero
+                # -1 gives highest protocol and smallest data file size
+                pickle.dump(pof_x, fout, protocol=-1)
+
         return

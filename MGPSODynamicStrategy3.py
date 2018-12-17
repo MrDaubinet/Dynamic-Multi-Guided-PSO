@@ -124,6 +124,6 @@ class PSODynamic:
                 else:
                     swarms[swarm_index][particle_index].best_fitness_value = float('-inf')
                 # possibly reset velocity,+
-                swarms[swarm_index][particle_index].velocity_indexes = [0] * swarms[swarm_index][particle_index].num_dimensions
+                # swarms[swarm_index][particle_index].velocity_indexes = [0] * swarms[swarm_index][particle_index].num_dimensions
         return
 

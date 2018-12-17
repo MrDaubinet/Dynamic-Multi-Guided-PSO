@@ -12,14 +12,13 @@ class SetupTruePof:
         nt_list = []
         tt_list = []
         benchmark_list = []
-        for benchmark in range(16, 17):
-            for nT in range(3):
-                for tT in range(3):
+        for benchmark in range(16):
+            for nT in [0, 1, 2]:
+                for tT in [0, 1, 2]:
                     nt_list.append(nT)
                     tt_list.append(tT)
                     benchmark_list.append(benchmark)
 
-        # print("Creating true front nT: "+str(nT)+" tT: "+str(tT))
         pool = ThreadPool()
         pool.starmap(SetupTruePof.process_function, zip(nt_list, tt_list, benchmark_list))
         pool.close()

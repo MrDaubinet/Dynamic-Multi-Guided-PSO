@@ -11,7 +11,7 @@ import hv as HyperVolume
 
 def collect_data(directory):
     """
-    Go to each benchmark directory, for each combination in the algorithm/archive strategy/dimension directory.
+    Go to each benchmark directory, for each combination in the algorithm/archive strategy/param_combination/dimension directory.
     Calculate the performance measures for each run.
     Find the standard deviation and average performance measure for each run
     :return:
@@ -32,18 +32,11 @@ def collect_data(directory):
                 for combination_folder in combination_folders:
                     combination_folder_directory = dimension_folder_directory + "/" + combination_folder
                     benchmark_objectives_folders = benchmark_sort([name for name in os.listdir(combination_folder_directory) if os.path.isdir(os.path.join(combination_folder_directory, name))])
-                    index = 0
-                    benchmark_objective_list = list()
                     benchmarks_list = list()
                     for benchmark_objectives_folder in benchmark_objectives_folders:
                         benchmark_objective_folder_directory = combination_folder_directory + "/" + benchmark_objectives_folder
                         run_list = collect_run_results(benchmark_objective_folder_directory)
-                        benchmark_objective_list.append(run_list)
-                        # if this is an obj_2
-                        if index % 2 != 0:
-                            benchmarks_list.append(benchmark_objective_list)
-                            benchmark_objective_list = list()
-                        index += 1
+                        benchmarks_list.append(run_list)
                     combinations_list.append(benchmarks_list)
                 dimensions_list.append(combinations_list)
             # archive_strategy_list.append(dimensions_list)
@@ -78,25 +71,6 @@ def collect_data_specific(directory, algorithm, strategies, dimension_name, dime
             pickle_results(old_results, "../Dynamic POF"+"/"+algorithm[0]+"/"+strategies[0])
     # pickle_results(algorithm_list)
     return
-
-
-def collect_run_results(parent_directory):
-    """
-    Read in each archive file under each run folder under the parent directory
-    :param parent_directory:
-    :return:
-    """
-    run_list = list()
-    run_folders = run_sort([name for name in os.listdir(parent_directory) if os.path.isdir(os.path.join(parent_directory, name))])
-    for run_folder in run_folders:
-        archive_list = list()
-        run_folder_directory = parent_directory + "/" + run_folder
-        for count, archive_file in enumerate(sorted([file for file in listdir(run_folder_directory) if isfile(join(run_folder_directory, file))]), start=0):
-            archive_file_directory = run_folder_directory + "/" + "archive_" + str(count)
-            archive = open(archive_file_directory, "r").read().split('\n')[:-1]
-            archive_list.append(archive)
-        run_list.append(archive_list)
-    return run_list
 
 
 def find_reference_vectors(directory):
@@ -918,6 +892,25 @@ def read_stab_combinations(directory):
 # --------------------- HELPER METHODS --------------------- #
 
 
+def collect_run_results(benchmark_directory):
+    """
+    Read in each archive file under each run folder under the parent directory
+    :param parent_directory:
+    :return:
+    """
+    run_list = list()
+    run_names = run_sort([name for name in os.listdir(benchmark_directory) if os.path.isdir(os.path.join(benchmark_directory, name))])
+    for run_file in run_names:
+        run_folder_directory = benchmark_directory + "/" + run_file
+        archive_list = pickle.load(open(run_folder_directory, "rb"))
+        # for count, archive_file in enumerate(sorted([file for file in listdir(run_folder_directory) if isfile(join(run_folder_directory, file))]), start=0):
+        #     archive_file_directory = run_folder_directory + "/" + "archive_" + str(count)
+        #     archive = open(archive_file_directory, "r").read().split('\n')[:-1]
+        #     archive_list.append(archive)
+        run_list.append(archive_list)
+    return run_list
+
+
 def print_results(algorithm, archive_strategy, dimension, parameter_combination, parameter_combination_average_hvd_value, parameter_combination_average_stab_value):
     return_list = list()
     algorithm_name = None
@@ -1053,14 +1046,14 @@ def load_results(fname="result_matrix.pkl"):
 
 # --------------------- Performance METHODS --------------------- #
 
-# collect_data("../Dynamic POF")
+collect_data("Dynamic POF")
 
 # find_reference_vectors("../Dynamic POF")
 # read_ns("../Dynamic POF")
 # stats_ns()
 # save_true_pof("Dynamic True POF")
 # read_acc("../Dynamic POF")
-stats_acc()
+# stats_acc()
 # read_stab("../Dynamic POF")
 # stats_stab()
 # get_true_pof_hv("../Dynamic POF")
