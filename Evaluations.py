@@ -4,7 +4,7 @@ import pickle
 import os
 
 
-class EvaluationsDynamic:
+class Evaluations:
     def __init__(self):
         self.__objectives = []
         self.__objective_types = []

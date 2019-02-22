@@ -1,6 +1,4 @@
-import EvaluationsDynamicLowDimensions
-import EvaluationsDynamicMediumDimensions
-import EvaluationsDynamicLargeDimensions
+import Evaluations
 
 from DMGPSO import DMGPSO_AS3, DMGPSO_AS2, DMGPSO_AS4, DMGPSO_AS1
 
@@ -49,15 +47,9 @@ class RunAlgorithm:
     @staticmethod
     def process_function(nT, tT, benchmark_index, run_index, dimensions, algorithm, archive_strategy):
         # Create the evaluations object
-        if dimensions == 0:
-            evaluations_dynamic = EvaluationsDynamicLowDimensions.EvaluationsDynamic()
-            evaluations_dynamic.set_dimensions_type("0")
-        elif dimensions == 1:
-            evaluations_dynamic = EvaluationsDynamicMediumDimensions.EvaluationsDynamic()
-            evaluations_dynamic.set_dimensions_type("1")
-        elif dimensions == 2:
-            evaluations_dynamic = EvaluationsDynamicLargeDimensions.EvaluationsDynamic()
-            evaluations_dynamic.set_dimensions_type("2")
+        evaluations_dynamic = Evaluations.Evaluations()
+        # set the dimension type
+        evaluations_dynamic.set_dimensions_type(dimensions)
 
         # create the benchmark functions from the evaluations object
         benchmarks = [
