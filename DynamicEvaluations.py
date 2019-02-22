@@ -131,7 +131,13 @@ class EvaluationsDynamic:
     def dimp2(self):
         self.current_bench = self.current_bench = '0'
         # number of dimensions
-        self.__num_dimensions = 2
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 2
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
+
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -201,7 +207,13 @@ class EvaluationsDynamic:
     def fda1(self):
         self.current_bench = self.current_bench = '1'
         # number of dimensions
-        self.__num_dimensions = 2
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 2
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
+
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -277,7 +289,12 @@ class EvaluationsDynamic:
     def fda1_zhou(self):
         self.current_bench = self.current_bench = '2'
         # number of dimensions
-        self.__num_dimensions = 2
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 2
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -376,7 +393,12 @@ class EvaluationsDynamic:
     def fda2(self):
         self.current_bench = self.current_bench = '3'
         # number of dimensions
-        self.__num_dimensions = 3
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 3
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -468,7 +490,12 @@ class EvaluationsDynamic:
     def fda2_camara(self):
         self.current_bench = '4'
         # number of dimensions
-        self.__num_dimensions = 3
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 3
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -558,7 +585,12 @@ class EvaluationsDynamic:
     def fda3(self):
         self.current_bench = '5'
         # number of dimensions
-        self.__num_dimensions = 2
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 2
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -641,7 +673,12 @@ class EvaluationsDynamic:
     def fda3_camara(self):
         self.current_bench = '6'
         # number of dimensions
-        self.__num_dimensions = 2
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 2
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -724,7 +761,12 @@ class EvaluationsDynamic:
     def dmop2(self):
         self.current_bench = '7'
         # number of dimensions
-        self.__num_dimensions = 2
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 2
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -805,7 +847,12 @@ class EvaluationsDynamic:
     def dmop3(self):
         self.current_bench = '8'
         # number of dimensions
-        self.__num_dimensions = 2
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 2
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -888,7 +935,12 @@ class EvaluationsDynamic:
     def dmop2_iso(self):
         self.current_bench = '9'
         # number of dimensions
-        self.__num_dimensions = 2
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 2
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -978,7 +1030,12 @@ class EvaluationsDynamic:
     def dmop2_dec(self):
         self.current_bench = '10'
         # number of dimensions
-        self.__num_dimensions = 2
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 2
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -1053,7 +1110,12 @@ class EvaluationsDynamic:
     def he_1(self):
         self.current_bench = '11'
         # number of dimensions
-        self.__num_dimensions = 2
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 2
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -1140,7 +1202,12 @@ class EvaluationsDynamic:
     def he_2(self):
         self.current_bench = '12'
         # number of dimensions
-        self.__num_dimensions = 2
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 2
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -1243,7 +1310,12 @@ class EvaluationsDynamic:
     def he_6(self):
         self.current_bench = '13'
         # number of dimensions
-        self.__num_dimensions = 3
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 3
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -1347,7 +1419,12 @@ class EvaluationsDynamic:
     def he_7(self):
         self.current_bench = '14'
         # number of dimensions
-        self.__num_dimensions = 3
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 3
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []
@@ -1477,7 +1554,13 @@ class EvaluationsDynamic:
     def he_9(self):
         self.current_bench = '15'
         # number of dimensions
-        self.__num_dimensions = 3
+        if self.__dimension_type == 0:
+            self.__num_dimensions = 3
+        if self.__dimension_type == 1:
+            self.__num_dimensions = 15
+        if self.__dimension_type == 2:
+            self.__num_dimensions = 30
+
         self.__objectives = []
         self.__objective_names = []
         self.__objective_types = []

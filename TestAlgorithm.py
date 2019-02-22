@@ -1,7 +1,5 @@
 from __future__ import division
-import PSO
-import MGPSODynamicStrategy2
-import Evaluations
+from DMGPSO import DMGPSO_AS2
 import EvaluationsDynamicLowDimensions
 
 def main():
@@ -15,6 +13,6 @@ def main():
         evaluations_dynamic.set_severity_of_change(severity_of_change[0])
         evaluations_dynamic.set_frequency_of_change(frequency_of_change[0])
         evaluations_dynamic.set_run(run)
-        MGPSODynamicStrategy2.PSODynamic(2000, evaluations_dynamic)
+        DMGPSO_AS2.PSODynamic(2000, evaluations_dynamic)
 
 main()

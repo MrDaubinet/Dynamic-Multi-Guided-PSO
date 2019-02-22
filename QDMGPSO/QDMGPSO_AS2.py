@@ -1,5 +1,5 @@
-import ParticleDynamicQuantum
-import ArchiveDynamic
+from QDMGPSO import Particle
+import DynamicArchive
 import copy
 import math
 
@@ -18,7 +18,7 @@ class PSODynamic:
         evaluations = dynamic_evaluations
         objective_functions = evaluations.get_objective_functions()
         num_particles = evaluations.get_num_particles()
-        archive = ArchiveDynamic.ArchiveDynamic(sum(num_particles), evaluations, "Quantum MGPSO", "Archive Strategy 3", evaluations.get_dimensions_type())
+        archive = DynamicArchive.ArchiveDynamic(sum(num_particles), evaluations, "Quantum MGPSO", "Archive Strategy 2", evaluations.get_dimensions_type())
         constants = evaluations.get_constants()
         objective_types = evaluations.get_objective_types()
         dimensions = evaluations.get_num_dimensions()
@@ -38,9 +38,11 @@ class PSODynamic:
             swarm = []
             for particle in range(0, num_particles[objective_index]):
                 if particle < math.floor(num_particles[objective_index] / 2):
-                    swarm.append(ParticleDynamicQuantum.ParticleDynamic(dimensions, objective_types[objective_index], bounds, constants[0], constants[1], constants[2], constants[3], True))
+                    swarm.append(
+                        Particle.ParticleDynamic(dimensions, objective_types[objective_index], bounds, constants[0], constants[1], constants[2], constants[3], True))
                 else:
-                    swarm.append(ParticleDynamicQuantum.ParticleDynamic(dimensions, objective_types[objective_index], bounds, constants[0], constants[1], constants[2], constants[3], False))
+                    swarm.append(
+                        Particle.ParticleDynamic(dimensions, objective_types[objective_index], bounds, constants[0], constants[1], constants[2], constants[3], False))
             swarms.append(copy.deepcopy(swarm))
 
         # begin optimization loop
@@ -66,7 +68,7 @@ class PSODynamic:
                         best_swarm_global_fitness_values.append(float('-inf'))
                     swarm_gbest_positions.append([])
                 # refresh archive
-                archive.reinitialize_archive()
+                archive.refresh_archive()
                 # update prev_t
                 prev_t = evaluations.get_t()
 

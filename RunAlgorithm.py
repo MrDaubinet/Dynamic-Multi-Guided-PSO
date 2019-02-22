@@ -2,15 +2,9 @@ import EvaluationsDynamicLowDimensions
 import EvaluationsDynamicMediumDimensions
 import EvaluationsDynamicLargeDimensions
 
-import MGPSODynamicStrategy1
-import MGPSODynamicStrategy2
-import MGPSODynamicStrategy3
-import MGPSODynamicStrategy4
+from DMGPSO import DMGPSO_AS3, DMGPSO_AS2, DMGPSO_AS4, DMGPSO_AS1
 
-import QMGPSODynamicStrategy1
-import QMGPSODynamicStrategy2
-import QMGPSODynamicStrategy3
-import QMGPSODynamicStrategy4
+from QDMGPSO import QDMGPSO_AS3, QDMGPSO_AS1, QDMGPSO_AS4, QDMGPSO_AS2
 
 from multiprocessing.dummy import Pool as ThreadPool
 
@@ -94,37 +88,37 @@ class RunAlgorithm:
             # MGPSO
             if archive_strategy == 0:
                 # Archive Strategy 1
-                MGPSODynamicStrategy1.PSODynamic(1000, evaluations_dynamic)
+                DMGPSO_AS1.PSODynamic(1000, evaluations_dynamic)
                 return
             if archive_strategy == 1:
                 # Archive Strategy 2
-                MGPSODynamicStrategy2.PSODynamic(1000, evaluations_dynamic)
+                DMGPSO_AS2.PSODynamic(1000, evaluations_dynamic)
                 return
             if archive_strategy == 2:
                 # Archive Strategy 3
-                MGPSODynamicStrategy3.PSODynamic(1000, evaluations_dynamic)
+                DMGPSO_AS3.PSODynamic(1000, evaluations_dynamic)
                 return
             if archive_strategy == 3:
                 # Archive Strategy 4
-                MGPSODynamicStrategy4.PSODynamic(1000, evaluations_dynamic)
+                DMGPSO_AS4.PSODynamic(1000, evaluations_dynamic)
                 return
         else:
             # Quantum MGPSO
             if archive_strategy == 0:
                 # Archive Strategy 1
-                QMGPSODynamicStrategy1.PSODynamic(1000, evaluations_dynamic)
+                QDMGPSO_AS1.PSODynamic(1000, evaluations_dynamic)
                 return
             if archive_strategy == 1:
                 # Archive Strategy 2
-                QMGPSODynamicStrategy2.PSODynamic(1000, evaluations_dynamic)
+                QDMGPSO_AS2.PSODynamic(1000, evaluations_dynamic)
                 return
             if archive_strategy == 2:
                 # Archive Strategy 3
-                QMGPSODynamicStrategy3.PSODynamic(1000, evaluations_dynamic)
+                QDMGPSO_AS3.PSODynamic(1000, evaluations_dynamic)
                 return
             if archive_strategy == 3:
                 # Archive Strategy 4
-                QMGPSODynamicStrategy4.PSODynamic(1000, evaluations_dynamic)
+                QDMGPSO_AS4.PSODynamic(1000, evaluations_dynamic)
                 return
 
     @staticmethod

@@ -1,4 +1,4 @@
-import MGPSODynamicStrategy2
+from DMGPSO import DMGPSO_AS2
 import EvaluationsDynamicLowDimensions
 import SetupTruePof
 import RunAlgorithm
@@ -25,7 +25,7 @@ def test_run_algorithm():
         # evaluations_dynamic.set_dimension_type(0)
         # -- Test fda1 -- #
         evaluations_dynamic.dimp2()
-        MGPSODynamicStrategy2.PSODynamic(1000, evaluations_dynamic)
+        DMGPSO_AS2.PSODynamic(1000, evaluations_dynamic)
 
 run_algorithm()
 # set_true_pof()

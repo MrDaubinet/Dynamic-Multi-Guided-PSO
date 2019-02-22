@@ -1,6 +1,7 @@
-import ParticleDynamic
-import ArchiveDynamic
+from QDMGPSO import Particle
+import DynamicArchive
 import copy
+import math
 
 
 class PSODynamic:
@@ -18,11 +19,13 @@ class PSODynamic:
         evaluations = dynamic_evaluations
         objective_functions = evaluations.get_objective_functions()
         num_particles = evaluations.get_num_particles()
-        archive = ArchiveDynamic.ArchiveDynamic(sum(num_particles), evaluations, "MGPSO", "Archive Strategy 2", evaluations.get_dimensions_type())
+        archive = DynamicArchive.ArchiveDynamic(sum(num_particles), evaluations, "Quantum MGPSO", "Archive Strategy 4", evaluations.get_dimensions_type())
         constants = evaluations.get_constants()
         objective_types = evaluations.get_objective_types()
         dimensions = evaluations.get_num_dimensions()
         bounds = evaluations.get_bounds()
+        current_guide_influence = 1
+        guide_influence_step = 1 / evaluations.frequency_of_change
 
         for objective_index in range(len(objective_functions)):
             if objective_types[objective_index] == "min":
@@ -37,7 +40,12 @@ class PSODynamic:
             # establish the swarm
             swarm = []
             for particle in range(0, num_particles[objective_index]):
-                swarm.append(ParticleDynamic.ParticleDynamic(dimensions, objective_types[objective_index], bounds, constants[0], constants[1], constants[2], constants[3]))
+                if particle < math.floor(num_particles[objective_index] / 2):
+                    swarm.append(
+                        Particle.ParticleDynamic(dimensions, objective_types[objective_index], bounds, constants[0], constants[1], constants[2], constants[3], True))
+                else:
+                    swarm.append(
+                        Particle.ParticleDynamic(dimensions, objective_types[objective_index], bounds, constants[0], constants[1], constants[2], constants[3], False))
             swarms.append(copy.deepcopy(swarm))
 
         # begin optimization loop
@@ -48,6 +56,10 @@ class PSODynamic:
         while iteration <= max_iterations:
             # print("iteration: " + str(iteration))
             evaluations.update_t(iteration)
+            # decrease the archive influence
+            current_guide_influence -= guide_influence_step
+            # set the guide influence for all particles
+            PSODynamic.set_guide_influence(swarms, current_guide_influence)
             # check if t has changed
             if evaluations.get_t() != prev_t:
                 # reset particle pbest and gbest values
@@ -64,6 +76,8 @@ class PSODynamic:
                     swarm_gbest_positions.append([])
                 # refresh archive
                 archive.refresh_archive()
+                # reset the archive influence
+                current_guide_influence = 1
                 # update prev_t
                 prev_t = evaluations.get_t()
 
@@ -102,6 +116,7 @@ class PSODynamic:
         archive.save_archive_to_file()
         print('Completed')
 
+
     @staticmethod
     def reset_particle(swarms):
         """
@@ -124,6 +139,19 @@ class PSODynamic:
                 else:
                     swarms[swarm_index][particle_index].best_fitness_value = float('-inf')
                 # possibly reset velocity,+
-                # swarms[swarm_index][particle_index].velocity_indexes = [0] * swarms[swarm_index][particle_index].num_dimensions
+                swarms[swarm_index][particle_index].velocity_indexes = [0] * swarms[swarm_index][particle_index].num_dimensions
+        return
+
+    @staticmethod
+    def set_guide_influence(swarms, current_guide_influence):
+        """
+        for every particle in each swarm,
+            # set the archive guide influence value
+        :param swarms:
+        :return:
+        """
+        for swarm_index in range(len(swarms)):
+            for particle_index in range(len(swarms[swarm_index])):
+                swarms[swarm_index][particle_index].guide_influence = current_guide_influence
         return
 

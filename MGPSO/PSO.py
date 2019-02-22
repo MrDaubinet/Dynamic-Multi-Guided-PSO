@@ -1,10 +1,9 @@
-import ParticleDynamicQuantum
-import ArchiveDynamic
+from MGPSO import Archive, Particle
 import copy
-import math
 
-class PSODynamic:
-    def __init__(self, max_iterations, dynamic_evaluations):
+
+class PSO:
+    def __init__(self, max_iterations, evaluations):
         """
         objective_functions: objective function array
         bounds: Bounds array (bounds for each objective value)
@@ -13,12 +12,12 @@ class PSODynamic:
         max_iterations: Number of iterations
         dimensions: Number of dimensions (length of particle position vector)
         """
-        best_swarm_global_fitness_values = []        # best error for group
+        best_swarm_global_fitness_values = []              # best error for group
         swarm_gbest_positions = []                   # best position for group
-        evaluations = dynamic_evaluations
+        evaluations = evaluations
         objective_functions = evaluations.get_objective_functions()
         num_particles = evaluations.get_num_particles()
-        archive = ArchiveDynamic.ArchiveDynamic(sum(num_particles), evaluations, "Quantum MGPSO", "Archive Strategy 2", evaluations.get_dimensions_type())
+        archive = Archive.Archive(sum(num_particles), evaluations)
         constants = evaluations.get_constants()
         objective_types = evaluations.get_objective_types()
         dimensions = evaluations.get_num_dimensions()
@@ -37,43 +36,18 @@ class PSODynamic:
             # establish the swarm
             swarm = []
             for particle in range(0, num_particles[objective_index]):
-                if particle < math.floor(num_particles[objective_index] / 2):
-                    swarm.append(ParticleDynamicQuantum.ParticleDynamic(dimensions, objective_types[objective_index], bounds, constants[0], constants[1], constants[2], constants[3], True))
-                else:
-                    swarm.append(ParticleDynamicQuantum.ParticleDynamic(dimensions, objective_types[objective_index], bounds, constants[0], constants[1], constants[2], constants[3], False))
+                swarm.append(
+                    Particle.Particle(dimensions, objective_types[objective_index], bounds, constants[0], constants[1], constants[2], constants[3]))
             swarms.append(copy.deepcopy(swarm))
 
         # begin optimization loop
-
-        iteration = 1
-        evaluations.update_t(iteration)
-        prev_t = evaluations.get_t()
-        while iteration <= max_iterations:
-            # print("iteration: " + str(iteration))
-            evaluations.update_t(iteration)
-            # check if t has changed
-            if evaluations.get_t() != prev_t:
-                # reset particle pbest and gbest values
-                PSODynamic.reset_particle(swarms)
-                # reset best_swarm_global_fitness_values
-                # reset swarm_gbest_positions
-                best_swarm_global_fitness_values = []  # best error for group
-                swarm_gbest_positions = []
-                for objective_index in range(len(objective_functions)):
-                    if objective_types[objective_index] == "min":
-                        best_swarm_global_fitness_values.append(float('inf'))
-                    else:
-                        best_swarm_global_fitness_values.append(float('-inf'))
-                    swarm_gbest_positions.append([])
-                # refresh archive
-                archive.refresh_archive()
-                # update prev_t
-                prev_t = evaluations.get_t()
-
+        iteration = 0
+        while iteration < max_iterations:
+            print("iteration: "+str(iteration))
             for objective_index in range(len(objective_functions)):
                 # cycle through particles in objective swarm and evaluate fitness
                 for particle_index in range(0, num_particles[objective_index]):
-                    swarms[objective_index][particle_index].evaluate(objective_functions[objective_index], evaluations.get_t(), evaluations.get_r_i())
+                    swarms[objective_index][particle_index].evaluate(objective_functions[objective_index])
                     # check to see if the current position is an individual best
                     if (objective_types[objective_index] == "min" and swarms[objective_index][particle_index].fitness_function_value < swarms[objective_index][particle_index].best_fitness_value) \
                             or (objective_types[objective_index] == "max" and swarms[objective_index][particle_index].fitness_function_value > swarms[objective_index][particle_index].best_fitness_value) \
@@ -102,32 +76,6 @@ class PSODynamic:
             iteration += 1
 
         # print final results
-        archive.save_archive_to_file()
-        print('Completed')
-
-
-    @staticmethod
-    def reset_particle(swarms):
-        """
-        for every particle in each swarm,
-            # reset best position
-            # reset best fitness value
-        Reset best_swarm_global_fitness_values.
-        Reset swarm_gbest_positions.
-        :param swarms:
-        :return:
-        """
-        # for every particle in each swarm,
-        # reset best position
-        # reset best fitness value
-        for swarm_index in range(len(swarms)):
-            for particle_index in range(len(swarms[swarm_index])):
-                swarms[swarm_index][particle_index].pbest_position_indexes = []
-                if swarms[swarm_index][particle_index].objective_type == "min":
-                    swarms[swarm_index][particle_index].best_fitness_value = float('inf')
-                else:
-                    swarms[swarm_index][particle_index].best_fitness_value = float('-inf')
-                # possibly reset velocity,+
-                swarms[swarm_index][particle_index].velocity_indexes = [0] * swarms[swarm_index][particle_index].num_dimensions
-        return
-
+        print('FINAL:')
+        # print(best_global_positions)
+        # print(best_global_fitness_value)
