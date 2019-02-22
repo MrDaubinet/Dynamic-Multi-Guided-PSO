@@ -1,5 +1,5 @@
 from QDMGPSO import Particle
-import DynamicArchive
+import Archive
 import copy
 import math
 
@@ -18,7 +18,7 @@ class PSODynamic:
         evaluations = dynamic_evaluations
         objective_functions = evaluations.get_objective_functions()
         num_particles = evaluations.get_num_particles()
-        archive = DynamicArchive.ArchiveDynamic(sum(num_particles), evaluations, "Quantum MGPSO", "Archive Strategy 2", evaluations.get_dimensions_type())
+        archive = Archive.ArchiveDynamic(sum(num_particles), evaluations, "Quantum MGPSO", "Archive Strategy 2", evaluations.get_dimensions_type())
         constants = evaluations.get_constants()
         objective_types = evaluations.get_objective_types()
         dimensions = evaluations.get_num_dimensions()
