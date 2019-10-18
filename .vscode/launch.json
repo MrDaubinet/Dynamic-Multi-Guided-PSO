@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Test Run",
+            "type": "python",
+            "request": "launch",
+            "program": "c:/Masters/Dynamic-Multi-Guided-PSO/test.py",
+            "pythonPath ": "wandb run python  C:\\Users\\Jordan\\Anaconda3\\envs\\tensorflow\\python.exe",
+            "args": [
+                "wandb", 
+                "run",
+                "python",
+                "test.py"
+            ],
+            "console": "integratedTerminal",
+        }
+    ]
+}

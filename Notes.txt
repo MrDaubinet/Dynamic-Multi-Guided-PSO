@@ -1,0 +1,10 @@
+• Updated __dimp2
+ - __dimp2_g (CORRECTION NEEDED)
+    - Added x_ii as a variable representing the second vector.
+    - Added i as a variable representing an index of x_ii (used in for loop over x_ii)
+    - Changed x_i to be a variable of x_ii at index i (used in for loop over x_ii)
+    - Changed __dimp2_gi to recieve i as an input (it was using i+1 before, which was incorrect)
+* TEST BENCHMARK WITH n_t=10, T_t=10 (done)
+
+• No Update __fda1
+* TEST BENCHMARK WITH n_t=10, T_t=10 (done)
