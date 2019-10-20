@@ -3,6 +3,7 @@ import random
 # Import weights and biases
 # import wandb
 
+
 class EvaluationsDynamic:
     def __init__(self):
         self.__objectives = []
@@ -67,16 +68,17 @@ class EvaluationsDynamic:
 
     def set_severity_of_change(self, s):
         self.__severity_of_change = s
-        wandb.config.severity_of_change = s
+        # wandb.config.severity_of_change = s
 
     def set_frequency_of_change(self, f):
         self.__frequency_of_change = f
-        wandb.config.frequency_of_change = f
+        # wandb.config.frequency_of_change = f
 
     def update_t(self, iteration):
-        self.__t = (1/self.__severity_of_change) * \
-            math.floor(iteration/self.__frequency_of_change)
-        return
+        return (1/self.__severity_of_change) * math.floor(iteration/self.__frequency_of_change)
+
+    def set_t(self, t):
+        self.__t = t
 
     def get_t(self):
         return self.__t
@@ -168,8 +170,7 @@ class EvaluationsDynamic:
 
     def dimp2_generate_pof(self, max_samples):
       """
-      Return an array of pof's. 
-          - Each pof has a list for f1 and a list for f2
+      Return an array of pof's where each pof has a list for f1 and a list for f2
       """
       pof = []
       f1 = []
@@ -179,30 +180,25 @@ class EvaluationsDynamic:
         new_f2 = (1 - math.sqrt(new_f1))
         f2.append(new_f2)
         f1.append(new_f1)
-      pof.append([[f1, f2]])
-      return
-        
+      pof.append({"f1": f1, "f2": f2})
+      return pof
 
     def dimp2_generate_pos(self, max_samples):
-      """
-      Return pos'. 
-          - [list for each g and a list for f1]
-      """
-      self.__severity_of_change = 10
-      self.__frequency_of_change = 10
-      pos = []
-      g = []
-      f1 = []
-      self.update_t(1)
-      prev_t = self.get_t()
-      for sample_index in range(1, max_samples, 1):
-        self.update_t(sample_index)
-        new_f1 = 1 / 1000 * sample_index
-        f1.append(new_f1)
-        new_t = self.get_t()
-        if(new_t != prev_t):
-            g.append(self.__dimp2_gi())
-            prev_g = new_g
+        """
+        Return an array of pos' where each pos has a list for each g and a list for f1
+        """
+        pos = []
+        self.set_t(1)
+        for iteration in range(1, max_samples, 1):
+            new_t = self.update_t(iteration)
+            f1 = []
+            g = []
+            for sample_index in range(1, max_samples, 1):
+                new_f1 = 1 / 1000 * sample_index
+                f1.append(new_f1)
+                g.append(self.__dimp2_gi(new_t, 1, 1))
+            pos.append({"f1": f1, "g": g})       
+        return pos
 
     # ----------------------------------------------- FDA1 ------------------------------------------------------------ #
 
@@ -276,8 +272,7 @@ class EvaluationsDynamic:
 
     def fda1_generate_pof(self, max_samples):
       """
-      Return an array of pof's. 
-          - Each pof has a list for f1 and a list for f2
+      Return an array of pof's where each pof has a list for f1 and a list for f2
       """
       pof = []
       f1 = []
@@ -287,36 +282,25 @@ class EvaluationsDynamic:
         new_f2 = (1 - math.sqrt(new_f1))
         f2.append(new_f2)
         f1.append(new_f1)
-      pof.append({"f1":f1, "f2": f2})
+      pof.append({"f1": f1, "f2": f2})
       return pof
-        
-    def fda1_generate_pos(self, max_samples):
-      """
-      Return an array of pos'. 
-          - Each pos has multiple lists for g and a list for f1
-      """
-      self.__severity_of_change = 10
-      self.__frequency_of_change = 10
-      pos = []
-      g = []
-      f1 = []
-      self.update_t(1)
-      prev_t = self.get_t()
-      print(prev_t)
-      g.append(self.__fda1_G(prev_t))
-      for sample_index in range(1, max_samples, 1):
-        self.update_t(sample_index)
-        new_f1 = 1 / 1000 * sample_index
-        f1.append(new_f1)
-        new_t = self.get_t()
-        if(new_t != prev_t):
-          prev_t = new_t
-          g.append(self.__fda1_G(prev_t))
 
-      for g_i in g:
-        pos.append({"f1": f1, "g":[g_i]*len(f1)})
-      return pos
-        
+    def fda1_generate_pos(self, max_samples, iterations):
+        """
+        Return an array of pos' where each pos has a list for each g and a list for f1
+        """
+        pos = []
+        self.set_t(1)
+        for iteration in range(1, max_samples, 1):
+            new_t = self.update_t(iteration)
+            f1 = []
+            g = []
+            for sample_index in range(1, max_samples, 1):
+                new_f1 = 1 / 1000 * sample_index
+                f1.append(new_f1)
+                g.append(self.__fda1_G(new_t))
+            pos.append({"f1": f1, "g": g})       
+        return pos
 
     # ----------------------------------------------- FDA1_zhou (ZJZ) ------------------------------------------------------------ #
 
@@ -395,19 +379,40 @@ class EvaluationsDynamic:
             self.__bounds.append([-1, 1])
 
     def fda1_zhou_generate_pof(self, max_samples):
-        pof_count = 0
-        prev_t = -1
-        for iteration in range(1000):
-            self.update_t(iteration + 1)
-            if self.get_t() != prev_t:
-                pof = []
-                for sample_index in range(max_samples):
-                    f_1 = 1 / 1000 * sample_index
-                    H = EvaluationsDynamic.__fda1_zhou_H(self.get_t())
-                    pof.append(1 - math.pow(f_1, H))
-                self.__save_true_pof(pof, pof_count)
-                pof_count += 1
-                prev_t = self.get_t()
+        """
+        Return an array of pof's where each pof has a list for f1 and a list for f2
+        """
+        pof = []
+        self.set_t(1)
+        for iteration in range(1, max_samples, 1):
+            new_t = self.update_t(iteration)
+            f1 = []
+            f2 = []
+            for sample_index in range(max_samples):
+                new_f1 = 1 / 1000 * sample_index
+                new_f2 = (1 - new_f1 ** self.__fda1_zhou_H(new_t))
+                f2.append(new_f2)
+                f1.append(new_f1)
+            pof.append({"f1": f1, "f2": f2})
+        return pof
+
+    def fda1_zhou_generate_pos(self, max_samples, iterations):
+        """
+        Return an array of pos' where each pos has a list for each g and a list for each f1
+        """
+        pos = []
+        self.set_t(1)
+        for iteration in range(1, iterations, 1):
+            new_t = self.update_t(iteration)
+            g = []
+            f1 = []
+            for sample_index in range(1, max_samples, 1):
+                new_f1 = 1 / 1000 * sample_index
+                new_g = self.__fda1_zhou_G(new_t) + (new_f1 ** self.__fda1_zhou_H(new_t))
+                f1.append(new_f1)
+                g.append(new_g)
+            pos.append({"f1": f1, "g": g})   
+        return pos
 
     # ----------------------------------------------- FDA2 ------------------------------------------------------------ #
 
